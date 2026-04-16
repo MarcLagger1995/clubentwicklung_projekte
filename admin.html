@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin – Clubentwicklung</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C8102E;
+    --red-light: #f5e6e9;
+    --red-mid: #e8b0bb;
+    --dark: #1a1a1a;
+    --mid: #444;
+    --muted: #888;
+    --light: #f7f5f2;
+    --white: #ffffff;
+    --border: #e8e4df;
+    --done: #2d6a4f;
+    --done-bg: #e8f5ee;
+    --active: #1a5f9e;
+    --active-bg: #e6f0fa;
+    --future: #7a5c00;
+    --future-bg: #fef6e0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(--dark); min-height: 100vh; }
+
+  /* Login screen */
+  #login-screen {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--light);
+  }
+  .login-box {
+    background: var(--white);
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    padding: 48px 40px;
+    width: 100%; max-width: 380px;
+    text-align: center;
+  }
+  .login-badge {
+    width: 52px; height: 52px;
+    background: var(--red);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 18px;
+    margin: 0 auto 20px;
+  }
+  .login-box h1 { font-family: 'DM Serif Display', serif; font-size: 26px; margin-bottom: 6px; }
+  .login-box p { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  .login-box input {
+    width: 100%; padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+  .login-box input:focus { border-color: var(--red); }
+  .login-error { color: var(--red); font-size: 13px; margin-bottom: 10px; display: none; }
+
+  /* Buttons */
+  .btn {
+    padding: 11px 24px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--red); color: white; width: 100%; }
+  .btn-primary:hover { background: #a80d24; }
+  .btn-secondary { background: var(--white); color: var(--dark); border: 1.5px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--red-mid); color: var(--red); }
+  .btn-danger { background: #fee2e2; color: #b91c1c; border: none; }
+  .btn-danger:hover { background: #fecaca; }
+  .btn-sm { padding: 6px 14px; font-size: 12px; border-radius: 7px; }
+
+  /* Admin screen */
+  #admin-screen { display: none; }
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 14px; }
+  .logo-badge { width: 36px; height: 36px; background: var(--red); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+  .logo-text { font-family: 'DM Serif Display', serif; font-size: 18px; }
+  .logo-sub { font-size: 12px; color: var(--muted); }
+  .header-right { display: flex; gap: 10px; align-items: center; }
+  .back-link { font-size: 13px; color: var(--muted); text-decoration: none; padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px; transition: all 0.2s; }
+  .back-link:hover { color: var(--dark); border-color: var(--dark); }
+
+  /* Main layout */
+  .main { max-width: 1100px; margin: 0 auto; padding: 40px; }
+  .main-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+  .main-header h1 { font-family: 'DM Serif Display', serif; font-size: 32px; }
+  .main-header p { color: var(--muted); font-size: 14px; margin-top: 4px; }
+
+  /* Project list */
+  .project-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
+  .project-item {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 18px 22px;
+    display: flex; align-items: center; gap: 16px;
+    transition: box-shadow 0.2s;
+  }
+  .project-item:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+  .item-thumb {
+    width: 56px; height: 56px;
+    border-radius: 8px;
+    background: var(--light);
+    overflow: hidden; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: var(--border);
+  }
+  .item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .item-info { flex: 1; min-width: 0; }
+  .item-title { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .status-badge { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .status-badge.abgeschlossen { background: var(--done-bg); color: var(--done); }
+  .status-badge.laufend { background: var(--active-bg); color: var(--active); }
+  .status-badge.geplant { background: var(--future-bg); color: var(--future); }
+  .item-date { font-size: 12px; color: var(--muted); }
+  .item-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  /* Form */
+  .form-section {
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-bottom: 32px;
+  }
+  .form-section h2 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 24px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  .form-group input, .form-group select, .form-group textarea {
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--white);
+    color: var(--dark);
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--red); }
+  .form-group textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+
+  /* Image upload */
+  .image-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .image-upload-area:hover, .image-upload-area.dragover { border-color: var(--red); background: var(--red-light); }
+  .image-upload-area p { font-size: 14px; color: var(--muted); margin-top: 8px; }
+  .image-upload-area span { font-size: 32px; }
+  #file-input { display: none; }
+  .image-previews { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .img-preview {
+    position: relative; width: 90px; height: 90px;
+    border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .img-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .img-preview .remove-img {
+    position: absolute; top: 4px; right: 4px;
+    width: 20px; height: 20px;
+    background: rgba(0,0,0,0.6);
+    border: none; border-radius: 50%;
+    color: white; font-size: 11px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .img-progress {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px; background: var(--red);
+    transition: width 0.3s;
+  }
+
+  /* Form actions */
+  .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--dark); color: white;
+    padding: 14px 20px; border-radius: 10px;
+    font-size: 14px; z-index: 9999;
+    transform: translateY(20px); opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { transform: none; opacity: 1; }
+  .toast.success { background: var(--done); }
+  .toast.error { background: #b91c1c; }
+
+  /* Loading */
+  .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty-list { text-align: center; padding: 48px; color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 600px) {
+    .main { padding: 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    header { padding: 0 20px; }
+    .item-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-badge">SS</div>
+    <h1>Admin-Bereich</h1>
+    <p>Clubentwicklung · Swiss-Ski</p>
+    <div class="login-error" id="login-error">Falsches Passwort. Bitte erneut versuchen.</div>
+    <input type="password" id="pw-input" placeholder="Passwort eingeben" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn btn-primary" onclick="doLogin()">Einloggen</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin-screen">
+  <header>
+    <div class="logo">
+      <div class="logo-badge">SS</div>
+      <div>
+        <div class="logo-text">Admin</div>
+        <div class="logo-sub">Projekte verwalten</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a href="index.html" class="back-link">← Zur Übersicht</a>
+    </div>
+  </header>
+
+  <div class="main">
+    <div class="main-header">
+      <div>
+        <h1>Projekte verwalten</h1>
+        <p id="project-count">Wird geladen…</p>
+      </div>
+      <button class="btn btn-primary" onclick="showForm()">+ Neues Projekt</button>
+    </div>
+
+    <!-- Project List -->
+    <div class="project-list" id="project-list">
+      <div class="empty-list">Projekte werden geladen…</div>
+    </div>
+
+    <!-- Form -->
+    <div class="form-section" id="form-section" style="display:none">
+      <h2 id="form-title">Neues Projekt erfassen</h2>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Projekttitel *</label>
+          <input type="text" id="f-titel" placeholder="z.B. Skiclub-Förderung Wallis">
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select id="f-status">
+            <option value="laufend">Laufend</option>
+            <option value="abgeschlossen">Abgeschlossen</option>
+            <option value="geplant">Geplant</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Datum (Monat/Jahr)</label>
+          <input type="month" id="f-datum">
+        </div>
+        <div class="form-group">
+          <label>Verantwortliche Person</label>
+          <input type="text" id="f-verantwortlich" placeholder="z.B. Maria Müller">
+        </div>
+        <div class="form-group">
+          <label>Budget</label>
+          <input type="text" id="f-budget" placeholder="z.B. CHF 15'000">
+        </div>
+        <div class="form-group">
+          <label>Partner / Kooperationen</label>
+          <input type="text" id="f-partner" placeholder="z.B. Swiss Olympic">
+        </div>
+        <div class="form-group">
+          <label>Region</label>
+          <input type="text" id="f-region" placeholder="z.B. Deutschschweiz">
+        </div>
+        <div class="form-group full">
+          <label>Kurzbeschrieb</label>
+          <textarea id="f-beschrieb" placeholder="Beschreibe das Projekt, seine Ziele und Resultate…"></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Bilder (max. 3)</label>
+          <div class="image-upload-area" id="upload-area" onclick="document.getElementById('file-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFiles(event)">
+            <span>🖼</span>
+            <p>Klicken oder Bilder hierher ziehen<br><small>JPG, PNG · max. 5MB pro Bild</small></p>
+          </div>
+          <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
+          <div class="image-previews" id="image-previews"></div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="cancelForm()">Abbrechen</button>
+        <button class="btn btn-primary" id="save-btn" onclick="saveProject()">Projekt speichern</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAMeorONDkfmn2gdqR6Z7mEuVpvuhEOEpY",
+  authDomain: "projekte-clubentwicklung.firebaseapp.com",
+  projectId: "projekte-clubentwicklung",
+  storageBucket: "projekte-clubentwicklung.firebasestorage.app",
+  messagingSenderId: "231854447168",
+  appId: "1:231854447168:web:4e790e537f11d46283dda5"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// ---- LOGIN ----
+window.doLogin = function() {
+  const pw = document.getElementById('pw-input').value;
+  if (pw === 'Clubetnwicklung') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+    loadProjects();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
+}
+
+// ---- PROJECTS ----
+let projects = [];
+let editingId = null;
+let newImageFiles = [];
+let existingImageUrls = [];
+
+async function loadProjects() {
+  try {
+    const q = query(collection(db, "projekte"), orderBy("datum", "desc"));
+    const snap = await getDocs(q);
+    projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderList();
+  } catch(e) {
+    showToast('Fehler beim Laden: ' + e.message, 'error');
+  }
+}
+
+function renderList() {
+  const list = document.getElementById('project-list');
+  document.getElementById('project-count').textContent = `${projects.length} Projekt${projects.length !== 1 ? 'e' : ''} erfasst`;
+
+  if (projects.length === 0) {
+    list.innerHTML = '<div class="empty-list">Noch keine Projekte erfasst. Klicke auf «Neues Projekt» um zu starten.</div>';
+    return;
+  }
+
+  list.innerHTML = projects.map(p => {
+    const thumb = (p.bilder && p.bilder.length > 0)
+      ? `<img src="${p.bilder[0]}" alt="">`
+      : '🏔';
+    const dateStr = p.datum ? new Date(p.datum + '-01').toLocaleDateString('de-CH', { month: 'short', year: 'numeric' }) : '';
+    return `
+      <div class="project-item">
+        <div class="item-thumb">${thumb}</div>
+        <div class="item-info">
+          <div class="item-title">${p.titel}</div>
+          <div class="item-meta">
+            <span class="status-badge ${p.status}">${p.status}</span>
+            <span class="item-date">${dateStr}</span>
+          </div>
+        </div>
+        <div class="item-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editProject('${p.id}')">✏ Bearbeiten</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProject('${p.id}', '${p.titel.replace(/'/g, "\\'")}')">✕</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ---- FORM ----
+window.showForm = function() {
+  editingId = null;
+  newImageFiles = [];
+  existingImageUrls = [];
+  clearForm();
+  document.getElementById('form-title').textContent = 'Neues Projekt erfassen';
+  document.getElementById('form-section').style.display = 'block';
+  document.getElementById('form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+window.cancelForm = function() {
+  document.getElementById('form-section').style.display = 'none';
+  editingId = null;
+  newImageFiles = [];
+  existingImageUrls = [];
+}
+
+window.editProject = function(id) {
+  const p = projects.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  newImageFiles = [];
+  existingImageUrls = [...(p.bilder || [])];
+
+  document.getElementById('f-titel').value = p.titel || '';
+  document.getElementById('f-status').value = p.status || 'laufend';
+  document.getElementById('f-datum').value = p.datum || '';
+  document.getElementById('f-verantwortlich').value = p.verantwortlich || '';
+  document.getElementById('f-budget').value = p.budget || '';
+  document.getElementById('f-partner').value = p.partner || '';
+  document.getElementById('f-region').value = p.region || '';
+  document.getElementById('f-beschrieb').value = p.beschrieb || '';
+
+  // Show existing images
+  renderPreviews();
+  document.getElementById('form-title').textContent = 'Projekt bearbeiten';
+  document.getElementById('form-section').style.display = 'block';
+  document.getElementById('form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearForm() {
+  ['f-titel','f-verantwortlich','f-budget','f-partner','f-region','f-beschrieb'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-status').value = 'laufend';
+  document.getElementById('f-datum').value = '';
+  document.getElementById('image-previews').innerHTML = '';
+}
+
+// ---- IMAGES ----
+window.handleFiles = function(files) {
+  const remaining = 3 - existingImageUrls.length - newImageFiles.length;
+  const toAdd = Array.from(files).slice(0, remaining);
+  newImageFiles = [...newImageFiles, ...toAdd];
+  renderPreviews();
+}
+
+window.dragOver = function(e) { e.preventDefault(); document.getElementById('upload-area').classList.add('dragover'); }
+window.dragLeave = function() { document.getElementById('upload-area').classList.remove('dragover'); }
+window.dropFiles = function(e) {
+  e.preventDefault();
+  document.getElementById('upload-area').classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+}
+
+function renderPreviews() {
+  const container = document.getElementById('image-previews');
+  container.innerHTML = '';
+  existingImageUrls.forEach((url, i) => {
+    const div = document.createElement('div');
+    div.className = 'img-preview';
+    div.innerHTML = `<img src="${url}"><button class="remove-img" onclick="removeExisting(${i})">✕</button>`;
+    container.appendChild(div);
+  });
+  newImageFiles.forEach((file, i) => {
+    const div = document.createElement('div');
+    div.className = 'img-preview';
+    const url = URL.createObjectURL(file);
+    div.innerHTML = `<img src="${url}"><button class="remove-img" onclick="removeNew(${i})">✕</button>`;
+    container.appendChild(div);
+  });
+}
+
+window.removeExisting = function(i) { existingImageUrls.splice(i, 1); renderPreviews(); }
+window.removeNew = function(i) { newImageFiles.splice(i, 1); renderPreviews(); }
+
+async function uploadImages() {
+  const urls = [...existingImageUrls];
+  for (const file of newImageFiles) {
+    const path = `projekte/${Date.now()}_${file.name}`;
+    const storageRef = ref(storage, path);
+    const task = uploadBytesResumable(storageRef, file);
+    const url = await new Promise((res, rej) => {
+      task.on('state_changed', null, rej, async () => {
+        res(await getDownloadURL(task.snapshot.ref));
+      });
+    });
+    urls.push(url);
+  }
+  return urls;
+}
+
+// ---- SAVE ----
+window.saveProject = async function() {
+  const titel = document.getElementById('f-titel').value.trim();
+  if (!titel) { showToast('Bitte einen Projekttitel eingeben.', 'error'); return; }
+
+  const btn = document.getElementById('save-btn');
+  btn.innerHTML = '<span class="spinner"></span> Speichern…';
+  btn.disabled = true;
+
+  try {
+    const bilder = await uploadImages();
+    const data = {
+      titel,
+      status: document.getElementById('f-status').value,
+      datum: document.getElementById('f-datum').value,
+      verantwortlich: document.getElementById('f-verantwortlich').value.trim(),
+      budget: document.getElementById('f-budget').value.trim(),
+      partner: document.getElementById('f-partner').value.trim(),
+      region: document.getElementById('f-region').value.trim(),
+      beschrieb: document.getElementById('f-beschrieb').value.trim(),
+      bilder,
+      updatedAt: new Date().toISOString()
+    };
+
+    if (editingId) {
+      await updateDoc(doc(db, "projekte", editingId), data);
+      showToast('Projekt aktualisiert ✓', 'success');
+    } else {
+      data.createdAt = new Date().toISOString();
+      await addDoc(collection(db, "projekte"), data);
+      showToast('Projekt gespeichert ✓', 'success');
+    }
+
+    await loadProjects();
+    cancelForm();
+  } catch(e) {
+    showToast('Fehler: ' + e.message, 'error');
+  } finally {
+    btn.innerHTML = 'Projekt speichern';
+    btn.disabled = false;
+  }
+}
+
+// ---- DELETE ----
+window.deleteProject = async function(id, titel) {
+  if (!confirm(`Projekt «${titel}» wirklich löschen?`)) return;
+  try {
+    await deleteDoc(doc(db, "projekte", id));
+    showToast('Projekt gelöscht.', 'success');
+    await loadProjects();
+  } catch(e) {
+    showToast('Fehler: ' + e.message, 'error');
+  }
+}
+
+// ---- TOAST ----
+window.showToast = function(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+</script>
+</body>
+</html>

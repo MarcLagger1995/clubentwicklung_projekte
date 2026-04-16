@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clubentwicklung – Projektübersicht</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #C8102E;
+    --red-light: #f5e6e9;
+    --red-mid: #e8b0bb;
+    --dark: #1a1a1a;
+    --mid: #444;
+    --muted: #888;
+    --light: #f7f5f2;
+    --white: #ffffff;
+    --border: #e8e4df;
+    --done: #2d6a4f;
+    --done-bg: #e8f5ee;
+    --active: #1a5f9e;
+    --active-bg: #e6f0fa;
+    --future: #7a5c00;
+    --future-bg: #fef6e0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--light); color: var(--dark); min-height: 100vh; }
+
+  /* Header */
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .logo-badge {
+    width: 36px; height: 36px;
+    background: var(--red);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 14px; letter-spacing: -0.5px;
+  }
+  .logo-text { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--dark); }
+  .logo-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .admin-link {
+    font-size: 13px; color: var(--muted); text-decoration: none;
+    padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .admin-link:hover { color: var(--red); border-color: var(--red-mid); background: var(--red-light); }
+
+  /* Hero */
+  .hero {
+    padding: 60px 40px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 5vw, 54px);
+    line-height: 1.1;
+    color: var(--dark);
+    margin-bottom: 12px;
+  }
+  .hero h1 em { color: var(--red); font-style: italic; }
+  .hero p { font-size: 16px; color: var(--muted); max-width: 500px; line-height: 1.6; }
+
+  /* Filters */
+  .filters {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px 32px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    padding: 8px 18px;
+    border-radius: 100px;
+    border: 1.5px solid var(--border);
+    background: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--mid);
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: var(--red-mid); color: var(--red); }
+  .filter-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
+  .filter-btn.done.active { background: var(--done); border-color: var(--done); }
+  .filter-btn.laufend.active { background: var(--active); border-color: var(--active); }
+  .filter-btn.geplant.active { background: var(--future); border-color: var(--future); }
+
+  /* Timeline */
+  .timeline-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+  .year-group { margin-bottom: 48px; }
+  .year-label {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .year-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Project cards */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  .project-card {
+    background: var(--white);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    animation: fadeIn 0.4s ease both;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .project-card:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.08); }
+
+  .card-images {
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+    background: var(--light);
+  }
+  .card-images img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .project-card:hover .card-images img { transform: scale(1.04); }
+  .img-count {
+    position: absolute;
+    bottom: 10px; right: 10px;
+    background: rgba(0,0,0,0.55);
+    color: white;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 100px;
+    backdrop-filter: blur(4px);
+  }
+  .no-image {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--border);
+    font-size: 40px;
+  }
+
+  .card-body { padding: 20px; }
+  .card-meta {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 10px;
+  }
+  .status-badge {
+    font-size: 11px; font-weight: 600;
+    padding: 3px 10px; border-radius: 100px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .status-badge.abgeschlossen { background: var(--done-bg); color: var(--done); }
+  .status-badge.laufend { background: var(--active-bg); color: var(--active); }
+  .status-badge.geplant { background: var(--future-bg); color: var(--future); }
+  .card-date { font-size: 12px; color: var(--muted); }
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px; line-height: 1.2;
+    margin-bottom: 8px;
+    color: var(--dark);
+  }
+  .card-desc {
+    font-size: 14px; color: var(--muted);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-footer-text { font-size: 12px; color: var(--muted); }
+  .read-more {
+    font-size: 12px; font-weight: 600;
+    color: var(--red); text-decoration: none;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+    grid-column: 1/-1;
+  }
+  .empty-state p { font-size: 15px; margin-top: 8px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--white);
+    border-radius: 18px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.3s;
+  }
+  .modal-overlay.open .modal { transform: none; }
+  .modal-images {
+    position: relative;
+    background: var(--dark);
+    border-radius: 18px 18px 0 0;
+    overflow: hidden;
+    height: 320px;
+  }
+  .modal-img-main {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+  .modal-img-main.active { display: block; }
+  .modal-img-nav {
+    position: absolute; bottom: 14px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; gap: 6px;
+  }
+  .modal-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    cursor: pointer; border: none;
+    transition: background 0.2s;
+  }
+  .modal-dot.active { background: white; }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 34px; height: 34px;
+    background: rgba(0,0,0,0.5);
+    border: none; border-radius: 50%;
+    color: white; font-size: 18px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-content { padding: 28px 32px 32px; }
+  .modal-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .modal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 30px; line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .modal-desc {
+    font-size: 15px; color: var(--mid);
+    line-height: 1.75;
+    white-space: pre-wrap;
+  }
+  .modal-info {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .info-item label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .info-item span { font-size: 14px; font-weight: 500; display: block; margin-top: 3px; }
+
+  /* No image placeholder in modal */
+  .modal-no-image {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 60px; color: #444;
+  }
+
+  /* Loading */
+  .loading {
+    text-align: center; padding: 80px;
+    color: var(--muted); font-size: 15px;
+  }
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--border);
+    border-top-color: var(--red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    header { padding: 0 20px; }
+    .hero, .filters, .timeline-container { padding-left: 20px; padding-right: 20px; }
+    .hero { padding-top: 36px; }
+    .modal-content { padding: 20px; }
+    .modal-info { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-badge">SS</div>
+    <div>
+      <div class="logo-text">Clubentwicklung</div>
+      <div class="logo-sub">Swiss-Ski Breitensport</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <a href="admin.html" class="admin-link">⚙ Admin</a>
+  </div>
+</header>
+
+<div class="hero">
+  <h1>Unsere <em>Projekte</em><br>im Überblick</h1>
+  <p>Abgeschlossene, laufende und geplante Projekte der Clubentwicklung – intern für das Swiss-Ski Team.</p>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" data-filter="alle">Alle</button>
+  <button class="filter-btn laufend" data-filter="laufend">● Laufend</button>
+  <button class="filter-btn done" data-filter="abgeschlossen">✓ Abgeschlossen</button>
+  <button class="filter-btn geplant" data-filter="geplant">◇ Geplant</button>
+</div>
+
+<div class="timeline-container" id="timeline">
+  <div class="loading">
+    <div class="spinner"></div>
+    Projekte werden geladen…
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-images" id="modal-images">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-img-nav" id="modal-dots"></div>
+    </div>
+    <div class="modal-content">
+      <div class="modal-meta">
+        <span class="status-badge" id="modal-status"></span>
+        <span class="card-date" id="modal-date"></span>
+      </div>
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-info" id="modal-info"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAMeorONDkfmn2gdqR6Z7mEuVpvuhEOEpY",
+  authDomain: "projekte-clubentwicklung.firebaseapp.com",
+  projectId: "projekte-clubentwicklung",
+  storageBucket: "projekte-clubentwicklung.firebasestorage.app",
+  messagingSenderId: "231854447168",
+  appId: "1:231854447168:web:4e790e537f11d46283dda5"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let allProjects = [];
+let activeFilter = 'alle';
+
+async function loadProjects() {
+  try {
+    const q = query(collection(db, "projekte"), orderBy("datum", "desc"));
+    const snap = await getDocs(q);
+    allProjects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderTimeline();
+  } catch (e) {
+    document.getElementById('timeline').innerHTML = `
+      <div class="empty-state">
+        <div style="font-size:40px">⚠️</div>
+        <p>Fehler beim Laden: ${e.message}</p>
+      </div>`;
+  }
+}
+
+function renderTimeline() {
+  const filtered = activeFilter === 'alle'
+    ? allProjects
+    : allProjects.filter(p => p.status === activeFilter);
+
+  const container = document.getElementById('timeline');
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div style="font-size:40px">📂</div><p>Keine Projekte in dieser Kategorie.</p></div>`;
+    return;
+  }
+
+  // Group by year
+  const groups = {};
+  filtered.forEach(p => {
+    const year = p.datum ? p.datum.substring(0, 4) : 'Ohne Datum';
+    if (!groups[year]) groups[year] = [];
+    groups[year].push(p);
+  });
+
+  const years = Object.keys(groups).sort((a, b) => b - a);
+  container.innerHTML = years.map(year => `
+    <div class="year-group">
+      <div class="year-label">${year}</div>
+      <div class="projects-grid">
+        ${groups[year].map(p => cardHTML(p)).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function cardHTML(p) {
+  const imgs = p.bilder || [];
+  const imgHTML = imgs.length > 0
+    ? `<img src="${imgs[0]}" alt="${p.titel}" loading="lazy">${imgs.length > 1 ? `<div class="img-count">+${imgs.length - 1} Bilder</div>` : ''}`
+    : `<div class="no-image">🏔</div>`;
+
+  const dateStr = p.datum ? new Date(p.datum).toLocaleDateString('de-CH', { month: 'long', year: 'numeric' }) : '';
+
+  return `
+    <div class="project-card" onclick='openModal(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+      <div class="card-images">${imgHTML}</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="status-badge ${p.status}">${p.status}</span>
+          <span class="card-date">${dateStr}</span>
+        </div>
+        <div class="card-title">${p.titel}</div>
+        <div class="card-desc">${p.beschrieb || ''}</div>
+      </div>
+      <div class="card-footer">
+        <span class="card-footer-text">${p.verantwortlich || ''}</span>
+        <span class="read-more">Mehr lesen →</span>
+      </div>
+    </div>`;
+}
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    renderTimeline();
+  });
+});
+
+// Modal
+let currentImgIndex = 0;
+let modalImages = [];
+
+window.openModal = function(p) {
+  modalImages = p.bilder || [];
+  currentImgIndex = 0;
+
+  const imgContainer = document.getElementById('modal-images');
+  // Clear previous images
+  imgContainer.querySelectorAll('.modal-img-main, .modal-no-image-box').forEach(el => el.remove());
+
+  if (modalImages.length > 0) {
+    modalImages.forEach((src, i) => {
+      const img = document.createElement('img');
+      img.className = 'modal-img-main' + (i === 0 ? ' active' : '');
+      img.src = src;
+      img.alt = p.titel;
+      imgContainer.insertBefore(img, imgContainer.firstChild);
+    });
+    const dots = document.getElementById('modal-dots');
+    dots.innerHTML = modalImages.length > 1
+      ? modalImages.map((_, i) => `<button class="modal-dot ${i===0?'active':''}" onclick="showImg(${i})"></button>`).join('')
+      : '';
+  } else {
+    const ph = document.createElement('div');
+    ph.className = 'modal-no-image';
+    ph.textContent = '🏔';
+    imgContainer.insertBefore(ph, imgContainer.firstChild);
+    document.getElementById('modal-dots').innerHTML = '';
+  }
+
+  document.getElementById('modal-status').textContent = p.status;
+  document.getElementById('modal-status').className = `status-badge ${p.status}`;
+  document.getElementById('modal-date').textContent = p.datum ? new Date(p.datum).toLocaleDateString('de-CH', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+  document.getElementById('modal-title').textContent = p.titel;
+  document.getElementById('modal-desc').textContent = p.beschrieb || '';
+  document.getElementById('modal-info').innerHTML = `
+    ${p.verantwortlich ? `<div class="info-item"><label>Verantwortlich</label><span>${p.verantwortlich}</span></div>` : ''}
+    ${p.budget ? `<div class="info-item"><label>Budget</label><span>${p.budget}</span></div>` : ''}
+    ${p.partner ? `<div class="info-item"><label>Partner</label><span>${p.partner}</span></div>` : ''}
+    ${p.region ? `<div class="info-item"><label>Region</label><span>${p.region}</span></div>` : ''}
+  `;
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+window.showImg = function(i) {
+  currentImgIndex = i;
+  document.querySelectorAll('.modal-img-main').forEach((img, idx) => {
+    img.classList.toggle('active', idx === i);
+  });
+  document.querySelectorAll('.modal-dot').forEach((dot, idx) => {
+    dot.classList.toggle('active', idx === i);
+  });
+}
+
+window.closeModal = function(e) {
+  if (e && e.target !== document.getElementById('modal-overlay') && !e.target.classList.contains('modal-close')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal({}); });
+
+loadProjects();
+</script>
+</body>
+</html>
