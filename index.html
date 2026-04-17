@@ -8,311 +8,250 @@
 <style>
   :root {
     --red: #C8102E;
-    --dark-nav: #1a1a2e;
     --nav-bg: #16213e;
-    --white: #ffffff;
+    --white: #fff;
     --light: #f4f4f6;
     --border: #e2e2e6;
     --text: #1a1a1a;
     --muted: #6b6b80;
-    --done: #2d6a4f;
-    --done-bg: #e8f5ee;
-    --done-dot: #3bb57a;
-    --active: #1a5f9e;
-    --active-bg: #e6f0fa;
-    --active-dot: #3b8bd4;
-    --future: #7a5c00;
-    --future-bg: #fef6e0;
-    --future-dot: #f0a500;
+    /* Status */
+    --done: #2d6a4f; --done-bg: #e8f5ee;
+    --active: #1a5f9e; --active-bg: #e6f0fa;
+    --future: #7a5c00; --future-bg: #fef6e0;
+    /* Projektart colors */
+    --c-begleitung: #7c3aed; --c-begleitung-bg: #f3eeff;
+    --c-tools: #0891b2; --c-tools-bg: #e0f7fa;
+    --c-komm: #b45309; --c-komm-bg: #fef3c7;
+    --c-events: #be123c; --c-events-bg: #fff1f2;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--text); min-height: 100vh; }
 
   /* TOP NAV */
-  .topnav {
-    background: var(--nav-bg);
-    height: 56px;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 32px;
-    position: sticky; top: 0; z-index: 200;
-  }
+  .topnav { background: var(--nav-bg); height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; position: sticky; top: 0; z-index: 200; }
   .topnav-left { display: flex; align-items: center; gap: 16px; }
-  .nav-badge {
-    width: 32px; height: 32px;
-    background: var(--red);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 700; font-size: 13px; letter-spacing: -0.5px;
-    flex-shrink: 0;
-  }
-  .nav-brand { color: white; }
+  .nav-badge { width: 32px; height: 32px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 13px; flex-shrink: 0; }
   .nav-brand-sub { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1.5px; line-height: 1; }
   .nav-brand-title { font-size: 15px; font-weight: 600; color: white; line-height: 1.3; }
-  .topnav-right { display: flex; align-items: center; gap: 10px; }
-  .nav-admin-btn {
-    background: none; border: 1px solid rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.7); font-family: 'Inter', sans-serif;
-    font-size: 12px; padding: 5px 14px; border-radius: 5px;
-    cursor: pointer; transition: all 0.2s; text-decoration: none;
-    display: inline-flex; align-items: center; gap: 5px;
-  }
+  .nav-admin-btn { background: none; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); font-family: 'Inter', sans-serif; font-size: 12px; padding: 5px 14px; border-radius: 5px; cursor: pointer; transition: all 0.2s; text-decoration: none; }
   .nav-admin-btn:hover { border-color: rgba(255,255,255,0.5); color: white; }
 
-  /* SUB NAV */
-  .subnav {
-    background: white;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center;
-    padding: 0 32px;
-    gap: 4px;
-  }
-  .subnav-item {
-    padding: 14px 16px;
-    font-size: 12px; font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s;
-    text-transform: uppercase; letter-spacing: 0.8px;
-    white-space: nowrap;
-    background: none; border-top: none; border-left: none; border-right: none;
-    font-family: 'Inter', sans-serif;
-  }
-  .subnav-item:hover { color: var(--text); }
-  .subnav-item.active { color: var(--red); border-bottom-color: var(--red); }
+  /* PROJEKTART TABS (main nav) */
+  .art-nav { background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 32px; gap: 2px; overflow-x: auto; }
+  .art-tab { padding: 15px 18px; font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.15s; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.7px; background: none; border-top: none; border-left: none; border-right: none; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 7px; }
+  .art-tab:hover { color: var(--text); }
+  .art-tab.active { color: var(--text); border-bottom-color: var(--red); }
+  .art-tab .art-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .art-tab-count { font-size: 10px; background: var(--light); color: var(--muted); padding: 1px 6px; border-radius: 100px; font-weight: 600; }
+  .art-tab.active .art-tab-count { background: var(--red); color: white; }
 
   /* MAIN */
-  .main { max-width: 1280px; margin: 0 auto; padding: 36px 32px 80px; }
+  .main { max-width: 1280px; margin: 0 auto; padding: 32px 32px 80px; }
+
+  /* STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 30px; }
+  .stat-card { background: white; border-radius: 6px; border: 1px solid var(--border); border-top: 3px solid var(--border); padding: 18px 20px 16px; }
+  .stat-card.begleitung { border-top-color: var(--c-begleitung); }
+  .stat-card.tools { border-top-color: var(--c-tools); }
+  .stat-card.komm { border-top-color: var(--c-komm); }
+  .stat-card.events { border-top-color: var(--c-events); }
+  .stat-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .stat-value { font-size: 30px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
 
   /* PAGE TITLE */
-  .page-title {
-    font-size: 20px; font-weight: 700;
-    color: var(--red);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-  }
-  .page-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
-  .title-divider { height: 2px; background: var(--red); width: 100%; margin-bottom: 28px; }
+  .page-title { font-size: 18px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .title-divider { height: 2px; background: var(--red); margin-bottom: 24px; margin-top: 2px; }
 
-  /* STATS ROW */
-  .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
-  .stat-card {
-    background: white;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--border);
-    padding: 20px 22px 18px;
-    transition: box-shadow 0.2s;
-  }
-  .stat-card:nth-child(1) { border-top-color: var(--red); }
-  .stat-card:nth-child(2) { border-top-color: #f0a500; }
-  .stat-card:nth-child(3) { border-top-color: #3bb57a; }
-  .stat-card:nth-child(4) { border-top-color: #3b8bd4; }
-  .stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
-  .stat-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-  .stat-value { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; letter-spacing: -1px; }
-  .stat-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  /* STATUS FILTER (secondary) */
+  .status-filter { display: flex; gap: 6px; margin-bottom: 22px; flex-wrap: wrap; align-items: center; }
+  .status-filter-label { font-size: 11px; color: var(--muted); font-weight: 500; margin-right: 4px; }
+  .status-btn { padding: 5px 13px; border-radius: 100px; border: 1.5px solid var(--border); background: white; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; cursor: pointer; color: var(--muted); transition: all 0.15s; display: flex; align-items: center; gap: 5px; }
+  .status-btn:hover { border-color: #999; color: var(--text); }
+  .status-btn.active.laufend { background: var(--active-bg); color: var(--active); border-color: var(--active); }
+  .status-btn.active.abgeschlossen { background: var(--done-bg); color: var(--done); border-color: var(--done); }
+  .status-btn.active.geplant { background: var(--future-bg); color: var(--future); border-color: var(--future); }
+  .status-btn.active.alle { background: var(--text); color: white; border-color: var(--text); }
 
-  /* FILTER TABS */
-  .filter-tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
-  .filter-tab {
-    padding: 7px 16px; border-radius: 4px;
-    border: 1px solid var(--border);
-    background: white; font-family: 'Inter', sans-serif;
-    font-size: 12px; font-weight: 500;
-    cursor: pointer; color: var(--muted);
-    transition: all 0.15s;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .filter-tab:hover { border-color: #aaa; color: var(--text); }
-  .filter-tab.active { background: var(--text); color: white; border-color: var(--text); }
-  .filter-tab .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-
-  /* PROJECT TABLE */
-  .section-label {
-    font-size: 11px; font-weight: 700;
-    color: var(--red);
-    text-transform: uppercase; letter-spacing: 1px;
-    margin-bottom: 14px;
-  }
-  .project-table {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    width: 100%;
-  }
-  .table-header {
-    display: grid;
-    grid-template-columns: 2fr 120px 140px 1fr;
-    background: #1a1a2e;
-    color: rgba(255,255,255,0.6);
-    font-size: 10px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 1px;
-    padding: 10px 20px;
-  }
-  .table-row {
-    display: grid;
-    grid-template-columns: 2fr 120px 140px 1fr;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    align-items: center;
-    cursor: pointer;
-    transition: background 0.15s;
-    animation: fadeIn 0.3s ease both;
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  .table-row:last-child { border-bottom: none; }
-  .table-row:hover { background: #fafafa; }
-  .row-project { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; }
-  .row-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-  .row-status { font-size: 11px; }
-  .status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
-  .status-pill.abgeschlossen { background: var(--done-bg); color: var(--done); }
-  .status-pill.laufend { background: var(--active-bg); color: var(--active); }
-  .status-pill.geplant { background: var(--future-bg); color: var(--future); }
-  .row-date { font-size: 13px; color: var(--muted); }
-  .row-person { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .empty-row { padding: 48px; text-align: center; color: var(--muted); font-size: 14px; }
-
-  /* CARDS SECTION */
-  .cards-section { margin-bottom: 36px; }
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-  .project-card {
-    background: white;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-    cursor: pointer;
-    transition: box-shadow 0.2s, transform 0.2s;
-    animation: fadeIn 0.3s ease both;
-  }
-  .project-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); transform: translateY(-2px); }
-  .card-img { height: 160px; background: var(--nav-bg); overflow: hidden; position: relative; }
+  /* CARDS */
+  .section-label { font-size: 11px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; margin-bottom: 36px; }
+  .project-card { background: white; border-radius: 6px; border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: box-shadow 0.2s, transform 0.2s; animation: fadeUp 0.3s ease both; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+  .project-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.09); transform: translateY(-2px); }
+  .card-img { height: 155px; background: var(--nav-bg); overflow: hidden; position: relative; }
   .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
   .project-card:hover .card-img img { transform: scale(1.04); }
-  .card-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.15); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
-  .card-tag { position: absolute; bottom: 10px; left: 10px; background: var(--red); color: white; font-size: 9px; font-weight: 700; padding: 3px 8px; text-transform: uppercase; letter-spacing: 1px; border-radius: 3px; }
-  .card-body { padding: 16px 18px; }
-  .card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.3; }
-  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .card-footer { padding: 10px 18px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .card-footer-date { font-size: 11px; color: var(--muted); }
-  .card-arrow { font-size: 13px; color: var(--red); font-weight: 600; }
+  .card-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.08); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; }
+  .card-art-tag { position: absolute; top: 10px; left: 10px; font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .card-art-tag.Clubbegleitung { background: var(--c-begleitung); color: white; }
+  .card-art-tag.Clubtools { background: var(--c-tools); color: white; }
+  .card-art-tag.Kommunikation { background: var(--c-komm); color: white; }
+  .card-art-tag.Events { background: var(--c-events); color: white; }
+  .card-body { padding: 15px 17px 12px; }
+  .card-top-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+  .status-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .status-tag.laufend { background: var(--active-bg); color: var(--active); }
+  .status-tag.abgeschlossen { background: var(--done-bg); color: var(--done); }
+  .status-tag.geplant { background: var(--future-bg); color: var(--future); }
+  .card-date { font-size: 11px; color: var(--muted); }
+  .card-title { font-size: 14px; font-weight: 600; line-height: 1.3; margin-bottom: 6px; }
+  .card-desc { font-size: 12px; color: var(--muted); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .card-footer { padding: 9px 17px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .card-person { font-size: 11px; color: var(--muted); }
+  .card-arrow { font-size: 12px; color: var(--red); font-weight: 700; }
+
+  /* TABLE */
+  .project-table { background: white; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .table-header { display: grid; grid-template-columns: 2fr 130px 130px 130px 1fr; background: #1a1a2e; color: rgba(255,255,255,0.55); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 10px 20px; }
+  .table-row { display: grid; grid-template-columns: 2fr 130px 130px 130px 1fr; padding: 13px 20px; border-bottom: 1px solid var(--border); align-items: center; cursor: pointer; transition: background 0.15s; animation: fadeUp 0.25s ease both; }
+  .table-row:last-child { border-bottom: none; }
+  .table-row:hover { background: #fafafa; }
+  .row-title { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 9px; }
+  .row-art-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .empty-row { padding: 48px; text-align: center; color: var(--muted); font-size: 14px; }
+
+  /* EMPTY STATE */
+  .empty-state { padding: 60px; text-align: center; color: var(--muted); grid-column: 1/-1; }
+  .empty-state-icon { font-size: 36px; margin-bottom: 12px; }
 
   /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(3px); }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(3px); }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
   .modal { background: white; border-radius: 8px; max-width: 680px; width: 100%; max-height: 88vh; overflow-y: auto; transform: translateY(16px); transition: transform 0.25s; }
   .modal-overlay.open .modal { transform: none; }
-  .modal-img-wrap { height: 280px; background: var(--nav-bg); position: relative; overflow: hidden; border-radius: 8px 8px 0 0; }
+  .modal-img-wrap { height: 260px; background: var(--nav-bg); position: relative; overflow: hidden; border-radius: 8px 8px 0 0; }
   .modal-img-main { width: 100%; height: 100%; object-fit: cover; display: none; }
   .modal-img-main.active { display: block; }
-  .modal-no-img { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.1); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
-  .modal-close { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; background: rgba(0,0,0,0.5); border: none; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .modal-img-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
+  .modal-no-img { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.08); font-size: 11px; text-transform: uppercase; letter-spacing: 3px; font-weight: 700; }
+  .modal-close { position: absolute; top: 12px; right: 12px; width: 30px; height: 30px; background: rgba(0,0,0,0.5); border: none; border-radius: 50%; color: white; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .modal-img-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
   .modal-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); border: none; cursor: pointer; transition: background 0.2s; }
   .modal-dot.active { background: white; }
-  .modal-body { padding: 28px 30px 32px; }
-  .modal-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .modal-title { font-size: 24px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+  .modal-body { padding: 26px 28px 30px; }
+  .modal-top-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .modal-art-tag { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .modal-art-tag.Clubbegleitung { background: var(--c-begleitung); color: white; }
+  .modal-art-tag.Clubtools { background: var(--c-tools); color: white; }
+  .modal-art-tag.Kommunikation { background: var(--c-komm); color: white; }
+  .modal-art-tag.Events { background: var(--c-events); color: white; }
+  .modal-title { font-size: 22px; font-weight: 700; line-height: 1.2; margin-bottom: 14px; }
   .modal-desc { font-size: 14px; color: #444; line-height: 1.75; white-space: pre-wrap; }
-  .modal-details { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .modal-details { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .detail-item label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-  .detail-item span { font-size: 14px; font-weight: 500; display: block; margin-top: 3px; }
+  .detail-item span { font-size: 13px; font-weight: 500; display: block; margin-top: 3px; }
 
   /* LOADING */
-  .loading { text-align: center; padding: 60px; color: var(--muted); }
-  .spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 14px; }
+  .loading { text-align: center; padding: 60px; color: var(--muted); grid-column: 1/-1; }
+  .spinner { width: 26px; height: 26px; border: 3px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 12px; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  @media (max-width: 700px) {
+  @media (max-width: 900px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .table-header, .table-row { grid-template-columns: 1fr 110px 100px; }
+    .table-header > *:nth-child(n+4), .table-row > *:nth-child(n+4) { display: none; }
+  }
+  @media (max-width: 600px) {
     .main { padding: 20px 16px 60px; }
-    .topnav, .subnav { padding-left: 16px; padding-right: 16px; }
-    .table-header, .table-row { grid-template-columns: 1fr 100px; }
-    .table-header > *:nth-child(n+3), .table-row > *:nth-child(n+3) { display: none; }
-    .modal-body { padding: 20px; }
+    .topnav, .art-nav { padding-left: 16px; padding-right: 16px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .modal-body { padding: 18px; }
     .modal-details { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- TOP NAV -->
 <nav class="topnav">
   <div class="topnav-left">
     <div class="nav-badge">SS</div>
-    <div class="nav-brand">
+    <div>
       <div class="nav-brand-sub">Swiss-Ski · Breitensport</div>
       <div class="nav-brand-title">Reporting Dashboard</div>
     </div>
   </div>
-  <div class="topnav-right">
-    <a href="admin.html" class="nav-admin-btn">⚙ Admin</a>
-  </div>
+  <a href="admin.html" class="nav-admin-btn">⚙ Admin</a>
 </nav>
 
-<!-- SUB NAV -->
-<div class="subnav">
-  <button class="subnav-item active" onclick="setView('projekte')">Projekte</button>
-  <button class="subnav-item" onclick="setView('timeline')">Timeline</button>
+<!-- PROJEKTART NAV -->
+<div class="art-nav" id="art-nav">
+  <button class="art-tab active" data-art="alle">
+    Alle <span class="art-tab-count" id="count-alle">0</span>
+  </button>
+  <button class="art-tab" data-art="Clubbegleitung">
+    <span class="art-dot" style="background:var(--c-begleitung)"></span>
+    Clubbegleitung <span class="art-tab-count" id="count-Clubbegleitung">0</span>
+  </button>
+  <button class="art-tab" data-art="Clubtools">
+    <span class="art-dot" style="background:var(--c-tools)"></span>
+    Clubtools <span class="art-tab-count" id="count-Clubtools">0</span>
+  </button>
+  <button class="art-tab" data-art="Kommunikation">
+    <span class="art-dot" style="background:var(--c-komm)"></span>
+    Kommunikation <span class="art-tab-count" id="count-Kommunikation">0</span>
+  </button>
+  <button class="art-tab" data-art="Events">
+    <span class="art-dot" style="background:var(--c-events)"></span>
+    Events <span class="art-tab-count" id="count-Events">0</span>
+  </button>
 </div>
 
-<!-- MAIN -->
 <div class="main">
-
-  <!-- Stats -->
-  <div class="stats-row" id="stats-row">
-    <div class="stat-card"><div class="stat-label">Projekte total</div><div class="stat-value" id="stat-total">–</div><div class="stat-sub">alle erfassten Projekte</div></div>
-    <div class="stat-card"><div class="stat-label">Laufend</div><div class="stat-value" id="stat-laufend">–</div><div class="stat-sub">aktive Projekte</div></div>
-    <div class="stat-card"><div class="stat-label">Abgeschlossen</div><div class="stat-value" id="stat-done">–</div><div class="stat-sub">erfolgreich abgeschlossen</div></div>
-    <div class="stat-card"><div class="stat-label">Geplant</div><div class="stat-value" id="stat-geplant">–</div><div class="stat-sub">in Planung</div></div>
-  </div>
-
-  <!-- Projekte View -->
-  <div id="view-projekte">
-    <div class="page-title" id="view-title">Alle Projekte – Clubentwicklung</div>
-    <div class="title-divider"></div>
-
-    <!-- Filter -->
-    <div class="filter-tabs">
-      <button class="filter-tab active" data-filter="alle">Alle</button>
-      <button class="filter-tab" data-filter="laufend"><span class="dot" style="background:var(--active-dot)"></span>Laufend</button>
-      <button class="filter-tab" data-filter="abgeschlossen"><span class="dot" style="background:var(--done-dot)"></span>Abgeschlossen</button>
-      <button class="filter-tab" data-filter="geplant"><span class="dot" style="background:var(--future-dot)"></span>Geplant</button>
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card begleitung">
+      <div class="stat-label">Clubbegleitung</div>
+      <div class="stat-value" id="stat-begleitung">–</div>
+      <div class="stat-sub">individuelle Projekte</div>
     </div>
-
-    <!-- Cards -->
-    <div class="cards-section">
-      <div class="section-label" id="cards-label">Alle Projekte</div>
-      <div class="cards-grid" id="cards-grid">
-        <div class="loading"><div class="spinner"></div>Wird geladen…</div>
-      </div>
+    <div class="stat-card tools">
+      <div class="stat-label">Clubtools</div>
+      <div class="stat-value" id="stat-tools">–</div>
+      <div class="stat-sub">Instrumente & Ressourcen</div>
     </div>
-
-    <!-- Table -->
-    <div class="section-label">Projektübersicht</div>
-    <div class="project-table">
-      <div class="table-header">
-        <div>Projekt</div>
-        <div>Status</div>
-        <div>Datum</div>
-        <div>Verantwortlich</div>
-      </div>
-      <div id="table-body">
-        <div class="empty-row">Wird geladen…</div>
-      </div>
+    <div class="stat-card komm">
+      <div class="stat-label">Kommunikation</div>
+      <div class="stat-value" id="stat-komm">–</div>
+      <div class="stat-sub">Austausch & Information</div>
+    </div>
+    <div class="stat-card events">
+      <div class="stat-label">Events</div>
+      <div class="stat-value" id="stat-events">–</div>
+      <div class="stat-sub">Veranstaltungen</div>
     </div>
   </div>
 
-  <!-- Timeline View -->
-  <div id="view-timeline" style="display:none">
-    <div class="page-title">Projektverlauf – Timeline</div>
-    <div class="title-divider"></div>
-    <div id="timeline-body"></div>
+  <!-- PAGE TITLE -->
+  <div class="page-title" id="page-title">Alle Projekte – Clubentwicklung</div>
+  <div class="title-divider"></div>
+
+  <!-- STATUS FILTER -->
+  <div class="status-filter">
+    <span class="status-filter-label">Status:</span>
+    <button class="status-btn active alle" data-status="alle">Alle</button>
+    <button class="status-btn laufend" data-status="laufend">● Laufend</button>
+    <button class="status-btn abgeschlossen" data-status="abgeschlossen">✓ Abgeschlossen</button>
+    <button class="status-btn geplant" data-status="geplant">◇ Geplant</button>
   </div>
 
+  <!-- CARDS -->
+  <div class="section-label" id="cards-label">Projekte</div>
+  <div class="cards-grid" id="cards-grid">
+    <div class="loading"><div class="spinner"></div>Wird geladen…</div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="section-label">Alle Projekte – Tabellenansicht</div>
+  <div class="project-table">
+    <div class="table-header">
+      <div>Projekt</div>
+      <div>Projektart</div>
+      <div>Status</div>
+      <div>Datum</div>
+      <div>Verantwortlich</div>
+    </div>
+    <div id="table-body"><div class="empty-row">Wird geladen…</div></div>
+  </div>
 </div>
 
 <!-- MODAL -->
@@ -323,10 +262,7 @@
       <div class="modal-img-dots" id="modal-dots"></div>
     </div>
     <div class="modal-body">
-      <div class="modal-meta">
-        <span class="status-pill" id="modal-status"></span>
-        <span style="font-size:12px;color:var(--muted)" id="modal-date"></span>
-      </div>
+      <div class="modal-top-meta" id="modal-top-meta"></div>
       <div class="modal-title" id="modal-title"></div>
       <div class="modal-desc" id="modal-desc"></div>
       <div class="modal-details" id="modal-details"></div>
@@ -350,9 +286,22 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 let allProjects = [];
-let activeFilter = 'alle';
+let activeArt = 'alle';
+let activeStatus = 'alle';
 
-const dotColors = { laufend: '#3b8bd4', abgeschlossen: '#3bb57a', geplant: '#f0a500' };
+const artColors = {
+  Clubbegleitung: 'var(--c-begleitung)',
+  Clubtools: 'var(--c-tools)',
+  Kommunikation: 'var(--c-komm)',
+  Events: 'var(--c-events)'
+};
+const artTitles = {
+  alle: 'Alle Projekte – Clubentwicklung',
+  Clubbegleitung: 'Clubbegleitung',
+  Clubtools: 'Clubtools',
+  Kommunikation: 'Kommunikation',
+  Events: 'Events'
+};
 
 async function load() {
   try {
@@ -360,55 +309,71 @@ async function load() {
     const snap = await getDocs(q);
     allProjects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     updateStats();
+    updateCounts();
     render();
   } catch(e) {
-    document.getElementById('cards-grid').innerHTML = `<div style="color:#b91c1c;padding:40px;font-size:14px">Fehler: ${e.message}</div>`;
+    document.getElementById('cards-grid').innerHTML = `<div style="color:#b91c1c;padding:40px;font-size:14px;grid-column:1/-1">Fehler: ${e.message}</div>`;
   }
 }
 
 function updateStats() {
-  document.getElementById('stat-total').textContent = allProjects.length;
-  document.getElementById('stat-laufend').textContent = allProjects.filter(p => p.status === 'laufend').length;
-  document.getElementById('stat-done').textContent = allProjects.filter(p => p.status === 'abgeschlossen').length;
-  document.getElementById('stat-geplant').textContent = allProjects.filter(p => p.status === 'geplant').length;
+  document.getElementById('stat-begleitung').textContent = allProjects.filter(p => p.art === 'Clubbegleitung').length;
+  document.getElementById('stat-tools').textContent = allProjects.filter(p => p.art === 'Clubtools').length;
+  document.getElementById('stat-komm').textContent = allProjects.filter(p => p.art === 'Kommunikation').length;
+  document.getElementById('stat-events').textContent = allProjects.filter(p => p.art === 'Events').length;
+}
+
+function updateCounts() {
+  document.getElementById('count-alle').textContent = allProjects.length;
+  ['Clubbegleitung','Clubtools','Kommunikation','Events'].forEach(art => {
+    document.getElementById('count-'+art).textContent = allProjects.filter(p => p.art === art).length;
+  });
 }
 
 function filtered() {
-  return activeFilter === 'alle' ? allProjects : allProjects.filter(p => p.status === activeFilter);
+  return allProjects.filter(p => {
+    const artOk = activeArt === 'alle' || p.art === activeArt;
+    const statusOk = activeStatus === 'alle' || p.status === activeStatus;
+    return artOk && statusOk;
+  });
 }
 
 function render() {
   const list = filtered();
+  document.getElementById('page-title').textContent = artTitles[activeArt] || 'Alle Projekte';
+  document.getElementById('cards-label').textContent = `${list.length} Projekt${list.length !== 1 ? 'e' : ''}`;
   renderCards(list);
   renderTable(list);
-  renderTimeline();
 }
 
 function renderCards(list) {
   const grid = document.getElementById('cards-grid');
-  const label = document.getElementById('cards-label');
-  const filterMap = { alle: 'Alle Projekte', laufend: 'Laufende Projekte', abgeschlossen: 'Abgeschlossene Projekte', geplant: 'Geplante Projekte' };
-  label.textContent = filterMap[activeFilter] || 'Alle Projekte';
-
-  if (list.length === 0) { grid.innerHTML = '<div style="padding:40px;color:#888;font-size:14px">Keine Projekte in dieser Kategorie.</div>'; return; }
-
+  if (list.length === 0) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📂</div><p>Keine Projekte in dieser Kategorie.</p></div>';
+    return;
+  }
   grid.innerHTML = list.map((p, i) => {
     const img = p.bilder && p.bilder.length > 0
-      ? `<img src="${p.bilder[0]}" alt="${p.titel}" onerror="this.style.display='none'">`
+      ? `<img src="${p.bilder[0]}" alt="" onerror="this.style.display='none'">`
       : `<div class="card-img-placeholder">Clubentwicklung</div>`;
-    const dateStr = p.datum ? new Date(p.datum + '-01').toLocaleDateString('de-CH', { month: 'long', year: 'numeric' }) : '';
+    const dateStr = p.datum ? new Date(p.datum+'-01').toLocaleDateString('de-CH',{month:'long',year:'numeric'}) : '';
+    const artClass = p.art || '';
     return `
-      <div class="project-card" style="animation-delay:${i*0.05}s" onclick='openModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
+      <div class="project-card" style="animation-delay:${i*0.04}s" onclick='openModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
         <div class="card-img">
           ${img}
-          <div class="card-tag">${p.status}</div>
+          <div class="card-art-tag ${artClass}">${p.art || ''}</div>
         </div>
         <div class="card-body">
+          <div class="card-top-meta">
+            <span class="status-tag ${p.status}">${p.status || ''}</span>
+            <span class="card-date">${dateStr}</span>
+          </div>
           <div class="card-title">${p.titel}</div>
           <div class="card-desc">${p.beschrieb || ''}</div>
         </div>
         <div class="card-footer">
-          <span class="card-footer-date">${dateStr}</span>
+          <span class="card-person">${p.verantwortlich || ''}</span>
           <span class="card-arrow">→</span>
         </div>
       </div>`;
@@ -419,80 +384,49 @@ function renderTable(list) {
   const body = document.getElementById('table-body');
   if (list.length === 0) { body.innerHTML = '<div class="empty-row">Keine Projekte gefunden.</div>'; return; }
   body.innerHTML = list.map((p, i) => {
-    const dot = dotColors[p.status] || '#888';
-    const dateStr = p.datum ? new Date(p.datum + '-01').toLocaleDateString('de-CH', { month: 'short', year: 'numeric' }) : '–';
+    const color = artColors[p.art] || '#888';
+    const dateStr = p.datum ? new Date(p.datum+'-01').toLocaleDateString('de-CH',{month:'short',year:'numeric'}) : '–';
     return `
       <div class="table-row" style="animation-delay:${i*0.03}s" onclick='openModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
-        <div class="row-project"><span class="row-dot" style="background:${dot}"></span>${p.titel}</div>
-        <div><span class="status-pill ${p.status}">${p.status}</span></div>
-        <div class="row-date">${dateStr}</div>
-        <div class="row-person">${p.verantwortlich || '–'}</div>
+        <div class="row-title"><span class="row-art-dot" style="background:${color}"></span>${p.titel}</div>
+        <div style="font-size:12px;color:var(--muted)">${p.art || '–'}</div>
+        <div><span class="status-tag ${p.status}">${p.status || '–'}</span></div>
+        <div style="font-size:12px;color:var(--muted)">${dateStr}</div>
+        <div style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.verantwortlich || '–'}</div>
       </div>`;
   }).join('');
 }
 
-function renderTimeline() {
-  const body = document.getElementById('timeline-body');
-  if (allProjects.length === 0) { body.innerHTML = '<div style="padding:40px;color:#888;font-size:14px">Noch keine Projekte erfasst.</div>'; return; }
-
-  const groups = {};
-  allProjects.forEach(p => {
-    const year = p.datum ? p.datum.substring(0,4) : 'Ohne Datum';
-    if (!groups[year]) groups[year] = [];
-    groups[year].push(p);
-  });
-
-  body.innerHTML = Object.keys(groups).sort((a,b) => b-a).map(year => `
-    <div style="margin-bottom:36px">
-      <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)">${year}</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        ${groups[year].map(p => {
-          const dot = dotColors[p.status] || '#888';
-          const dateStr = p.datum ? new Date(p.datum+'-01').toLocaleDateString('de-CH',{month:'long',year:'numeric'}) : '';
-          return `
-            <div onclick='openModal(${JSON.stringify(p).replace(/'/g,"&#39;")})' style="background:white;border:1px solid var(--border);border-radius:6px;padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:box-shadow 0.2s" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow='none'">
-              <span style="width:10px;height:10px;border-radius:50%;background:${dot};flex-shrink:0"></span>
-              <div style="flex:1;min-width:0">
-                <div style="font-weight:600;font-size:14px">${p.titel}</div>
-                <div style="font-size:12px;color:var(--muted);margin-top:2px">${p.verantwortlich || ''}</div>
-              </div>
-              <span class="status-pill ${p.status}" style="flex-shrink:0">${p.status}</span>
-              <span style="font-size:12px;color:var(--muted);flex-shrink:0">${dateStr}</span>
-            </div>`;
-        }).join('')}
-      </div>
-    </div>`).join('');
-}
-
-// Filter
-document.querySelectorAll('.filter-tab').forEach(btn => {
+// Projektart tabs
+document.querySelectorAll('.art-tab').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.art-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    activeFilter = btn.dataset.filter;
+    activeArt = btn.dataset.art;
     render();
   });
 });
 
-// View toggle
-window.setView = function(view) {
-  document.querySelectorAll('.subnav-item').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('view-projekte').style.display = view === 'projekte' ? '' : 'none';
-  document.getElementById('view-timeline').style.display = view === 'timeline' ? '' : 'none';
-}
+// Status filter
+document.querySelectorAll('.status-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeStatus = btn.dataset.status;
+    render();
+  });
+});
 
 // Modal
 window.openModal = function(p) {
   const wrap = document.getElementById('modal-img-wrap');
   wrap.querySelectorAll('.modal-img-main,.modal-no-img-el').forEach(el => el.remove());
-
   const imgs = p.bilder || [];
   if (imgs.length > 0) {
     imgs.forEach((src, i) => {
       const img = document.createElement('img');
       img.className = 'modal-img-main' + (i===0?' active':'');
-      img.src = src; img.alt = p.titel;
+      img.src = src;
       wrap.insertBefore(img, wrap.firstChild);
     });
     document.getElementById('modal-dots').innerHTML = imgs.length > 1
@@ -505,9 +439,13 @@ window.openModal = function(p) {
     document.getElementById('modal-dots').innerHTML = '';
   }
 
-  document.getElementById('modal-status').textContent = p.status;
-  document.getElementById('modal-status').className = `status-pill ${p.status}`;
-  document.getElementById('modal-date').textContent = p.datum ? new Date(p.datum+'-01').toLocaleDateString('de-CH',{month:'long',year:'numeric'}) : '';
+  const artClass = p.art || '';
+  const dateStr = p.datum ? new Date(p.datum+'-01').toLocaleDateString('de-CH',{month:'long',year:'numeric'}) : '';
+  document.getElementById('modal-top-meta').innerHTML = `
+    <span class="modal-art-tag ${artClass}">${p.art || ''}</span>
+    <span class="status-tag ${p.status}">${p.status || ''}</span>
+    <span style="font-size:11px;color:var(--muted)">${dateStr}</span>
+  `;
   document.getElementById('modal-title').textContent = p.titel;
   document.getElementById('modal-desc').textContent = p.beschrieb || '';
   document.getElementById('modal-details').innerHTML = [
@@ -525,15 +463,8 @@ window.showImg = function(i) {
   document.querySelectorAll('.modal-img-main').forEach((img,idx) => img.classList.toggle('active', idx===i));
   document.querySelectorAll('.modal-dot').forEach((d,idx) => d.classList.toggle('active', idx===i));
 }
-
-window.closeModal = function(e) {
-  if (e.target !== document.getElementById('modal-overlay')) return;
-  closeModalDirect();
-}
-window.closeModalDirect = function() {
-  document.getElementById('modal-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
+window.closeModal = function(e) { if (e.target === document.getElementById('modal-overlay')) closeModalDirect(); }
+window.closeModalDirect = function() { document.getElementById('modal-overlay').classList.remove('open'); document.body.style.overflow = ''; }
 document.addEventListener('keydown', e => { if(e.key==='Escape') closeModalDirect(); });
 
 load();
