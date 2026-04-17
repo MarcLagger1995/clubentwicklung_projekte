@@ -3,340 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clubentwicklung – Reporting Dashboard</title>
+<title>Admin – Clubentwicklung</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --red: #C8102E;
-    --dark-nav: #1a1a2e;
     --nav-bg: #16213e;
-    --white: #ffffff;
+    --white: #fff;
     --light: #f4f4f6;
     --border: #e2e2e6;
     --text: #1a1a1a;
     --muted: #6b6b80;
-    --done: #2d6a4f;
-    --done-bg: #e8f5ee;
-    --done-dot: #3bb57a;
-    --active: #1a5f9e;
-    --active-bg: #e6f0fa;
-    --active-dot: #3b8bd4;
-    --future: #7a5c00;
-    --future-bg: #fef6e0;
-    --future-dot: #f0a500;
+    --done: #2d6a4f; --done-bg: #e8f5ee;
+    --active: #1a5f9e; --active-bg: #e6f0fa;
+    --future: #7a5c00; --future-bg: #fef6e0;
+    --c-begleitung: #7c3aed; --c-begleitung-bg: #f3eeff;
+    --c-tools: #0891b2; --c-tools-bg: #e0f7fa;
+    --c-komm: #b45309; --c-komm-bg: #fef3c7;
+    --c-events: #be123c; --c-events-bg: #fff1f2;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Inter', sans-serif; background: var(--light); color: var(--text); min-height: 100vh; }
 
-  /* TOP NAV */
-  .topnav {
-    background: var(--nav-bg);
-    height: 56px;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 32px;
-    position: sticky; top: 0; z-index: 200;
-  }
+  #login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .login-box { background: white; border-radius: 8px; border: 1px solid var(--border); padding: 48px 40px; width: 100%; max-width: 380px; text-align: center; }
+  .login-top { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 24px; }
+  .login-badge { width: 40px; height: 40px; background: var(--red); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+  .login-brand-sub { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; text-align: left; }
+  .login-brand-title { font-size: 15px; font-weight: 600; text-align: left; }
+  .login-box h2 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+  .login-box p { color: var(--muted); font-size: 13px; margin-bottom: 24px; }
+  .login-error { color: var(--red); font-size: 12px; margin-bottom: 10px; background: #fef2f2; padding: 8px 12px; border-radius: 5px; display: none; }
+  .login-box input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; margin-bottom: 12px; }
+  .login-box input:focus { border-color: var(--red); }
+
+  .btn { padding: 10px 20px; border-radius: 6px; border: none; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .btn-primary { background: var(--red); color: white; }
+  .btn-primary:hover { background: #a80d24; }
+  .btn-full { width: 100%; }
+  .btn-secondary { background: white; color: var(--text); border: 1.5px solid var(--border); }
+  .btn-secondary:hover { border-color: #999; }
+  .btn-danger { background: #fee2e2; color: #b91c1c; border: none; }
+  .btn-danger:hover { background: #fecaca; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 5px; }
+
+  #admin-screen { display: none; }
+  .topnav { background: var(--nav-bg); height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; position: sticky; top: 0; z-index: 200; }
   .topnav-left { display: flex; align-items: center; gap: 16px; }
-  .nav-badge {
-    width: 32px; height: 32px;
-    background: var(--red);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-weight: 700; font-size: 13px; letter-spacing: -0.5px;
-    flex-shrink: 0;
-  }
-  .nav-brand { color: white; }
-  .nav-brand-sub { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1.5px; line-height: 1; }
-  .nav-brand-title { font-size: 15px; font-weight: 600; color: white; line-height: 1.3; }
-  .topnav-right { display: flex; align-items: center; gap: 10px; }
-  .nav-admin-btn {
-    background: none; border: 1px solid rgba(255,255,255,0.2);
-    color: rgba(255,255,255,0.7); font-family: 'Inter', sans-serif;
-    font-size: 12px; padding: 5px 14px; border-radius: 5px;
-    cursor: pointer; transition: all 0.2s; text-decoration: none;
-    display: inline-flex; align-items: center; gap: 5px;
-  }
-  .nav-admin-btn:hover { border-color: rgba(255,255,255,0.5); color: white; }
+  .nav-badge { width: 32px; height: 32px; background: var(--red); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 13px; }
+  .nav-brand-sub { font-size: 10px; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1.5px; }
+  .nav-brand-title { font-size: 15px; font-weight: 600; color: white; }
+  .back-link { font-size: 12px; color: rgba(255,255,255,0.6); text-decoration: none; padding: 5px 14px; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; transition: all 0.2s; }
+  .back-link:hover { color: white; border-color: rgba(255,255,255,0.5); }
 
-  /* SUB NAV */
-  .subnav {
-    background: white;
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center;
-    padding: 0 32px;
-    gap: 4px;
-  }
-  .subnav-item {
-    padding: 14px 16px;
-    font-size: 12px; font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    transition: all 0.15s;
-    text-transform: uppercase; letter-spacing: 0.8px;
-    white-space: nowrap;
-    background: none; border-top: none; border-left: none; border-right: none;
-    font-family: 'Inter', sans-serif;
-  }
-  .subnav-item:hover { color: var(--text); }
-  .subnav-item.active { color: var(--red); border-bottom-color: var(--red); }
+  .main { max-width: 1100px; margin: 0 auto; padding: 32px 32px 80px; }
+  .page-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
+  .page-title { font-size: 18px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.5px; }
+  .page-count { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .title-divider { height: 2px; background: var(--red); margin-bottom: 24px; }
 
-  /* MAIN */
-  .main { max-width: 1280px; margin: 0 auto; padding: 36px 32px 80px; }
+  .project-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .project-item { background: white; border-radius: 6px; border: 1px solid var(--border); padding: 14px 18px; display: flex; align-items: center; gap: 14px; transition: box-shadow 0.15s; }
+  .project-item:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.06); }
+  .item-thumb { width: 46px; height: 46px; border-radius: 6px; background: var(--light); overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--muted); text-align: center; }
+  .item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .item-info { flex: 1; min-width: 0; }
+  .item-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-meta { display: flex; align-items: center; gap: 7px; margin-top: 5px; flex-wrap: wrap; }
+  .art-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.6px; }
+  .art-tag.Clubbegleitung { background: var(--c-begleitung); color: white; }
+  .art-tag.Clubtools { background: var(--c-tools); color: white; }
+  .art-tag.Kommunikation { background: var(--c-komm); color: white; }
+  .art-tag.Events { background: var(--c-events); color: white; }
+  .status-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.3px; }
+  .status-tag.laufend { background: var(--active-bg); color: var(--active); }
+  .status-tag.abgeschlossen { background: var(--done-bg); color: var(--done); }
+  .status-tag.geplant { background: var(--future-bg); color: var(--future); }
+  .item-date { font-size: 11px; color: var(--muted); }
+  .item-actions { display: flex; gap: 7px; flex-shrink: 0; }
+  .empty-list { text-align: center; padding: 48px; color: var(--muted); font-size: 14px; background: white; border-radius: 6px; border: 1px solid var(--border); }
 
-  /* PAGE TITLE */
-  .page-title {
-    font-size: 20px; font-weight: 700;
-    color: var(--red);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-  }
-  .page-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 28px; }
-  .title-divider { height: 2px; background: var(--red); width: 100%; margin-bottom: 28px; }
+  .form-section { background: white; border-radius: 6px; border: 1px solid var(--border); border-top: 3px solid var(--red); padding: 28px; margin-bottom: 32px; }
+  .form-title { font-size: 15px; font-weight: 700; margin-bottom: 22px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  .form-group input, .form-group select, .form-group textarea { padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; color: var(--text); background: white; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--red); }
+  .form-group textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 
-  /* STATS ROW */
-  .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
-  .stat-card {
-    background: white;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--border);
-    padding: 20px 22px 18px;
-    transition: box-shadow 0.2s;
-  }
-  .stat-card:nth-child(1) { border-top-color: var(--red); }
-  .stat-card:nth-child(2) { border-top-color: #f0a500; }
-  .stat-card:nth-child(3) { border-top-color: #3bb57a; }
-  .stat-card:nth-child(4) { border-top-color: #3b8bd4; }
-  .stat-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
-  .stat-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-  .stat-value { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; letter-spacing: -1px; }
-  .stat-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  /* Projektart selector with colored preview */
+  .art-select-wrap { position: relative; }
+  .art-preview { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
 
-  /* FILTER TABS */
-  .filter-tabs { display: flex; gap: 6px; margin-bottom: 24px; flex-wrap: wrap; }
-  .filter-tab {
-    padding: 7px 16px; border-radius: 4px;
-    border: 1px solid var(--border);
-    background: white; font-family: 'Inter', sans-serif;
-    font-size: 12px; font-weight: 500;
-    cursor: pointer; color: var(--muted);
-    transition: all 0.15s;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .filter-tab:hover { border-color: #aaa; color: var(--text); }
-  .filter-tab.active { background: var(--text); color: white; border-color: var(--text); }
-  .filter-tab .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .img-url-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .img-url-row input { flex: 1; }
+  .img-preview-thumb { width: 44px; height: 44px; border-radius: 5px; object-fit: cover; border: 1px solid var(--border); display: none; flex-shrink: 0; }
+  .img-hint { font-size: 12px; color: var(--muted); margin-top: 6px; background: var(--light); border-radius: 6px; padding: 10px 13px; line-height: 1.6; }
+  .img-hint a { color: var(--red); text-decoration: none; font-weight: 600; }
 
-  /* PROJECT TABLE */
-  .section-label {
-    font-size: 11px; font-weight: 700;
-    color: var(--red);
-    text-transform: uppercase; letter-spacing: 1px;
-    margin-bottom: 14px;
-  }
-  .project-table {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    overflow: hidden;
-    width: 100%;
-  }
-  .table-header {
-    display: grid;
-    grid-template-columns: 2fr 120px 140px 1fr;
-    background: #1a1a2e;
-    color: rgba(255,255,255,0.6);
-    font-size: 10px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 1px;
-    padding: 10px 20px;
-  }
-  .table-row {
-    display: grid;
-    grid-template-columns: 2fr 120px 140px 1fr;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border);
-    align-items: center;
-    cursor: pointer;
-    transition: background 0.15s;
-    animation: fadeIn 0.3s ease both;
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  .table-row:last-child { border-bottom: none; }
-  .table-row:hover { background: #fafafa; }
-  .row-project { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; }
-  .row-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-  .row-status { font-size: 11px; }
-  .status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; }
-  .status-pill.abgeschlossen { background: var(--done-bg); color: var(--done); }
-  .status-pill.laufend { background: var(--active-bg); color: var(--active); }
-  .status-pill.geplant { background: var(--future-bg); color: var(--future); }
-  .row-date { font-size: 13px; color: var(--muted); }
-  .row-person { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .empty-row { padding: 48px; text-align: center; color: var(--muted); font-size: 14px; }
+  .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
 
-  /* CARDS SECTION */
-  .cards-section { margin-bottom: 36px; }
-  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-  .project-card {
-    background: white;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-    cursor: pointer;
-    transition: box-shadow 0.2s, transform 0.2s;
-    animation: fadeIn 0.3s ease both;
-  }
-  .project-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); transform: translateY(-2px); }
-  .card-img { height: 160px; background: var(--nav-bg); overflow: hidden; position: relative; }
-  .card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
-  .project-card:hover .card-img img { transform: scale(1.04); }
-  .card-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.15); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
-  .card-tag { position: absolute; bottom: 10px; left: 10px; background: var(--red); color: white; font-size: 9px; font-weight: 700; padding: 3px 8px; text-transform: uppercase; letter-spacing: 1px; border-radius: 3px; }
-  .card-body { padding: 16px 18px; }
-  .card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.3; }
-  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .card-footer { padding: 10px 18px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .card-footer-date { font-size: 11px; color: var(--muted); }
-  .card-arrow { font-size: 13px; color: var(--red); font-weight: 600; }
-
-  /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; opacity: 0; pointer-events: none; transition: opacity 0.25s; backdrop-filter: blur(3px); }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal { background: white; border-radius: 8px; max-width: 680px; width: 100%; max-height: 88vh; overflow-y: auto; transform: translateY(16px); transition: transform 0.25s; }
-  .modal-overlay.open .modal { transform: none; }
-  .modal-img-wrap { height: 280px; background: var(--nav-bg); position: relative; overflow: hidden; border-radius: 8px 8px 0 0; }
-  .modal-img-main { width: 100%; height: 100%; object-fit: cover; display: none; }
-  .modal-img-main.active { display: block; }
-  .modal-no-img { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.1); font-size: 11px; text-transform: uppercase; letter-spacing: 2px; }
-  .modal-close { position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; background: rgba(0,0,0,0.5); border: none; border-radius: 50%; color: white; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .modal-img-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; }
-  .modal-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.35); border: none; cursor: pointer; transition: background 0.2s; }
-  .modal-dot.active { background: white; }
-  .modal-body { padding: 28px 30px 32px; }
-  .modal-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-  .modal-title { font-size: 24px; font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
-  .modal-desc { font-size: 14px; color: #444; line-height: 1.75; white-space: pre-wrap; }
-  .modal-details { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .detail-item label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
-  .detail-item span { font-size: 14px; font-weight: 500; display: block; margin-top: 3px; }
-
-  /* LOADING */
-  .loading { text-align: center; padding: 60px; color: var(--muted); }
-  .spinner { width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 14px; }
+  .toast { position: fixed; bottom: 24px; right: 24px; background: #1a1a2e; color: white; padding: 12px 18px; border-radius: 6px; font-size: 13px; z-index: 9999; transform: translateY(16px); opacity: 0; transition: all 0.25s; pointer-events: none; }
+  .toast.show { transform: none; opacity: 1; }
+  .toast.success { background: var(--done); }
+  .toast.error { background: #b91c1c; }
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  @media (max-width: 700px) {
-    .main { padding: 20px 16px 60px; }
-    .topnav, .subnav { padding-left: 16px; padding-right: 16px; }
-    .table-header, .table-row { grid-template-columns: 1fr 100px; }
-    .table-header > *:nth-child(n+3), .table-row > *:nth-child(n+3) { display: none; }
-    .modal-body { padding: 20px; }
-    .modal-details { grid-template-columns: 1fr; }
+  @media (max-width: 600px) {
+    .main { padding: 20px 16px; }
+    .topnav { padding: 0 16px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .page-header { flex-direction: column; gap: 12px; }
+    .item-actions { flex-direction: column; }
   }
 </style>
 </head>
 <body>
 
-<!-- TOP NAV -->
-<nav class="topnav">
-  <div class="topnav-left">
-    <div class="nav-badge">SS</div>
-    <div class="nav-brand">
-      <div class="nav-brand-sub">Swiss-Ski · Breitensport</div>
-      <div class="nav-brand-title">Reporting Dashboard</div>
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-top">
+      <div class="login-badge">SS</div>
+      <div>
+        <div class="login-brand-sub">Swiss-Ski · Breitensport</div>
+        <div class="login-brand-title">Reporting Dashboard</div>
+      </div>
     </div>
+    <h2>Admin-Bereich</h2>
+    <p>Projekte erfassen und verwalten</p>
+    <div class="login-error" id="login-error">Falsches Passwort.</div>
+    <input type="password" id="pw-input" placeholder="Passwort eingeben" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn btn-primary btn-full" onclick="doLogin()">Einloggen</button>
   </div>
-  <div class="topnav-right">
-    <a href="admin.html" class="nav-admin-btn">⚙ Admin</a>
-  </div>
-</nav>
-
-<!-- SUB NAV -->
-<div class="subnav">
-  <button class="subnav-item active" onclick="setView('projekte')">Projekte</button>
-  <button class="subnav-item" onclick="setView('timeline')">Timeline</button>
 </div>
 
-<!-- MAIN -->
-<div class="main">
+<div id="admin-screen">
+  <nav class="topnav">
+    <div class="topnav-left">
+      <div class="nav-badge">SS</div>
+      <div>
+        <div class="nav-brand-sub">Swiss-Ski · Breitensport</div>
+        <div class="nav-brand-title">Admin – Projekte verwalten</div>
+      </div>
+    </div>
+    <a href="index.html" class="back-link">← Zur Übersicht</a>
+  </nav>
 
-  <!-- Stats -->
-  <div class="stats-row" id="stats-row">
-    <div class="stat-card"><div class="stat-label">Projekte total</div><div class="stat-value" id="stat-total">–</div><div class="stat-sub">alle erfassten Projekte</div></div>
-    <div class="stat-card"><div class="stat-label">Laufend</div><div class="stat-value" id="stat-laufend">–</div><div class="stat-sub">aktive Projekte</div></div>
-    <div class="stat-card"><div class="stat-label">Abgeschlossen</div><div class="stat-value" id="stat-done">–</div><div class="stat-sub">erfolgreich abgeschlossen</div></div>
-    <div class="stat-card"><div class="stat-label">Geplant</div><div class="stat-value" id="stat-geplant">–</div><div class="stat-sub">in Planung</div></div>
-  </div>
-
-  <!-- Projekte View -->
-  <div id="view-projekte">
-    <div class="page-title" id="view-title">Alle Projekte – Clubentwicklung</div>
+  <div class="main">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Projekte verwalten</div>
+        <div class="page-count" id="project-count">Wird geladen…</div>
+      </div>
+      <button class="btn btn-primary" onclick="showForm()">+ Neues Projekt</button>
+    </div>
     <div class="title-divider"></div>
 
-    <!-- Filter -->
-    <div class="filter-tabs">
-      <button class="filter-tab active" data-filter="alle">Alle</button>
-      <button class="filter-tab" data-filter="laufend"><span class="dot" style="background:var(--active-dot)"></span>Laufend</button>
-      <button class="filter-tab" data-filter="abgeschlossen"><span class="dot" style="background:var(--done-dot)"></span>Abgeschlossen</button>
-      <button class="filter-tab" data-filter="geplant"><span class="dot" style="background:var(--future-dot)"></span>Geplant</button>
+    <div class="project-list" id="project-list">
+      <div class="empty-list">Wird geladen…</div>
     </div>
 
-    <!-- Cards -->
-    <div class="cards-section">
-      <div class="section-label" id="cards-label">Alle Projekte</div>
-      <div class="cards-grid" id="cards-grid">
-        <div class="loading"><div class="spinner"></div>Wird geladen…</div>
-      </div>
-    </div>
+    <div class="form-section" id="form-section" style="display:none">
+      <div class="form-title" id="form-title">Neues Projekt erfassen</div>
+      <div class="form-grid">
 
-    <!-- Table -->
-    <div class="section-label">Projektübersicht</div>
-    <div class="project-table">
-      <div class="table-header">
-        <div>Projekt</div>
-        <div>Status</div>
-        <div>Datum</div>
-        <div>Verantwortlich</div>
+        <div class="form-group full">
+          <label>Projekttitel *</label>
+          <input type="text" id="f-titel" placeholder="z.B. Clubbegleitung Skiclub Naters">
+        </div>
+
+        <div class="form-group">
+          <label>Projektart *</label>
+          <select id="f-art">
+            <option value="">– bitte wählen –</option>
+            <option value="Clubbegleitung">Clubbegleitung</option>
+            <option value="Clubtools">Clubtools</option>
+            <option value="Kommunikation">Kommunikation</option>
+            <option value="Events">Events</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Status *</label>
+          <select id="f-status">
+            <option value="laufend">Laufend</option>
+            <option value="abgeschlossen">Abgeschlossen</option>
+            <option value="geplant">Geplant</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Datum (Monat/Jahr)</label>
+          <input type="month" id="f-datum">
+        </div>
+
+        <div class="form-group">
+          <label>Verantwortliche Person</label>
+          <input type="text" id="f-verantwortlich" placeholder="z.B. Maria Müller">
+        </div>
+
+        <div class="form-group">
+          <label>Budget</label>
+          <input type="text" id="f-budget" placeholder="z.B. CHF 15'000">
+        </div>
+
+        <div class="form-group">
+          <label>Partner / Kooperationen</label>
+          <input type="text" id="f-partner" placeholder="z.B. Swiss Olympic">
+        </div>
+
+        <div class="form-group">
+          <label>Region / Club</label>
+          <input type="text" id="f-region" placeholder="z.B. Skiclub Naters">
+        </div>
+
+        <div class="form-group full">
+          <label>Kurzbeschrieb</label>
+          <textarea id="f-beschrieb" placeholder="Beschreibe das Projekt, seine Ziele und Resultate…"></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label>Bilder (bis zu 3 Bild-Links)</label>
+          <div class="img-url-row">
+            <img class="img-preview-thumb" id="prev-0" alt="">
+            <input type="url" id="f-bild-0" placeholder="Bild 1 – Link (z.B. https://i.imgur.com/abc.jpg)" oninput="previewImg(0)">
+          </div>
+          <div class="img-url-row">
+            <img class="img-preview-thumb" id="prev-1" alt="">
+            <input type="url" id="f-bild-1" placeholder="Bild 2 – Link (optional)" oninput="previewImg(1)">
+          </div>
+          <div class="img-url-row">
+            <img class="img-preview-thumb" id="prev-2" alt="">
+            <input type="url" id="f-bild-2" placeholder="Bild 3 – Link (optional)" oninput="previewImg(2)">
+          </div>
+          <div class="img-hint">
+            💡 Bild hochladen auf <a href="https://imgur.com" target="_blank">imgur.com</a> → Rechtsklick auf Bild → «Bildadresse kopieren» → Link hier einfügen.
+          </div>
+        </div>
+
       </div>
-      <div id="table-body">
-        <div class="empty-row">Wird geladen…</div>
+      <div class="form-actions">
+        <button class="btn btn-secondary" onclick="cancelForm()">Abbrechen</button>
+        <button class="btn btn-primary" id="save-btn" onclick="saveProject()">Projekt speichern</button>
       </div>
     </div>
   </div>
-
-  <!-- Timeline View -->
-  <div id="view-timeline" style="display:none">
-    <div class="page-title">Projektverlauf – Timeline</div>
-    <div class="title-divider"></div>
-    <div id="timeline-body"></div>
-  </div>
-
 </div>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal">
-    <div class="modal-img-wrap" id="modal-img-wrap">
-      <button class="modal-close" onclick="closeModalDirect()">✕</button>
-      <div class="modal-img-dots" id="modal-dots"></div>
-    </div>
-    <div class="modal-body">
-      <div class="modal-meta">
-        <span class="status-pill" id="modal-status"></span>
-        <span style="font-size:12px;color:var(--muted)" id="modal-date"></span>
-      </div>
-      <div class="modal-title" id="modal-title"></div>
-      <div class="modal-desc" id="modal-desc"></div>
-      <div class="modal-details" id="modal-details"></div>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, orderBy, query }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMeorONDkfmn2gdqR6Z7mEuVpvuhEOEpY",
@@ -349,194 +271,151 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-let allProjects = [];
-let activeFilter = 'alle';
+let projects = [];
+let editingId = null;
 
-const dotColors = { laufend: '#3b8bd4', abgeschlossen: '#3bb57a', geplant: '#f0a500' };
+window.doLogin = function() {
+  if (document.getElementById('pw-input').value === 'Clubetnwicklung') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-screen').style.display = 'block';
+    loadProjects();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('pw-input').value = '';
+  }
+}
 
-async function load() {
+async function loadProjects() {
   try {
     const q = query(collection(db, "projekte"), orderBy("datum", "desc"));
     const snap = await getDocs(q);
-    allProjects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    updateStats();
-    render();
-  } catch(e) {
-    document.getElementById('cards-grid').innerHTML = `<div style="color:#b91c1c;padding:40px;font-size:14px">Fehler: ${e.message}</div>`;
+    projects = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderList();
+  } catch(e) { showToast('Fehler: ' + e.message, 'error'); }
+}
+
+function renderList() {
+  const list = document.getElementById('project-list');
+  document.getElementById('project-count').textContent = `${projects.length} Projekt${projects.length !== 1 ? 'e' : ''} erfasst`;
+  if (projects.length === 0) {
+    list.innerHTML = '<div class="empty-list">Noch keine Projekte. Klicke auf «+ Neues Projekt».</div>';
+    return;
   }
-}
-
-function updateStats() {
-  document.getElementById('stat-total').textContent = allProjects.length;
-  document.getElementById('stat-laufend').textContent = allProjects.filter(p => p.status === 'laufend').length;
-  document.getElementById('stat-done').textContent = allProjects.filter(p => p.status === 'abgeschlossen').length;
-  document.getElementById('stat-geplant').textContent = allProjects.filter(p => p.status === 'geplant').length;
-}
-
-function filtered() {
-  return activeFilter === 'alle' ? allProjects : allProjects.filter(p => p.status === activeFilter);
-}
-
-function render() {
-  const list = filtered();
-  renderCards(list);
-  renderTable(list);
-  renderTimeline();
-}
-
-function renderCards(list) {
-  const grid = document.getElementById('cards-grid');
-  const label = document.getElementById('cards-label');
-  const filterMap = { alle: 'Alle Projekte', laufend: 'Laufende Projekte', abgeschlossen: 'Abgeschlossene Projekte', geplant: 'Geplante Projekte' };
-  label.textContent = filterMap[activeFilter] || 'Alle Projekte';
-
-  if (list.length === 0) { grid.innerHTML = '<div style="padding:40px;color:#888;font-size:14px">Keine Projekte in dieser Kategorie.</div>'; return; }
-
-  grid.innerHTML = list.map((p, i) => {
-    const img = p.bilder && p.bilder.length > 0
-      ? `<img src="${p.bilder[0]}" alt="${p.titel}" onerror="this.style.display='none'">`
-      : `<div class="card-img-placeholder">Clubentwicklung</div>`;
-    const dateStr = p.datum ? new Date(p.datum + '-01').toLocaleDateString('de-CH', { month: 'long', year: 'numeric' }) : '';
+  list.innerHTML = projects.map(p => {
+    const thumb = p.bilder && p.bilder.length > 0
+      ? `<img src="${p.bilder[0]}" onerror="this.style.display='none'">`
+      : 'Kein Bild';
+    const dateStr = p.datum ? new Date(p.datum+'-01').toLocaleDateString('de-CH',{month:'short',year:'numeric'}) : '';
     return `
-      <div class="project-card" style="animation-delay:${i*0.05}s" onclick='openModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
-        <div class="card-img">
-          ${img}
-          <div class="card-tag">${p.status}</div>
+      <div class="project-item">
+        <div class="item-thumb">${thumb}</div>
+        <div class="item-info">
+          <div class="item-title">${p.titel}</div>
+          <div class="item-meta">
+            <span class="art-tag ${p.art || ''}">${p.art || '–'}</span>
+            <span class="status-tag ${p.status || ''}">${p.status || '–'}</span>
+            <span class="item-date">${dateStr}</span>
+          </div>
         </div>
-        <div class="card-body">
-          <div class="card-title">${p.titel}</div>
-          <div class="card-desc">${p.beschrieb || ''}</div>
-        </div>
-        <div class="card-footer">
-          <span class="card-footer-date">${dateStr}</span>
-          <span class="card-arrow">→</span>
+        <div class="item-actions">
+          <button class="btn btn-secondary btn-sm" onclick="editProject('${p.id}')">✏ Bearbeiten</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProject('${p.id}','${p.titel.replace(/'/g,"\\'")}')">✕</button>
         </div>
       </div>`;
   }).join('');
 }
 
-function renderTable(list) {
-  const body = document.getElementById('table-body');
-  if (list.length === 0) { body.innerHTML = '<div class="empty-row">Keine Projekte gefunden.</div>'; return; }
-  body.innerHTML = list.map((p, i) => {
-    const dot = dotColors[p.status] || '#888';
-    const dateStr = p.datum ? new Date(p.datum + '-01').toLocaleDateString('de-CH', { month: 'short', year: 'numeric' }) : '–';
-    return `
-      <div class="table-row" style="animation-delay:${i*0.03}s" onclick='openModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>
-        <div class="row-project"><span class="row-dot" style="background:${dot}"></span>${p.titel}</div>
-        <div><span class="status-pill ${p.status}">${p.status}</span></div>
-        <div class="row-date">${dateStr}</div>
-        <div class="row-person">${p.verantwortlich || '–'}</div>
-      </div>`;
-  }).join('');
+window.showForm = function() {
+  editingId = null; clearForm();
+  document.getElementById('form-title').textContent = 'Neues Projekt erfassen';
+  document.getElementById('form-section').style.display = 'block';
+  document.getElementById('form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function renderTimeline() {
-  const body = document.getElementById('timeline-body');
-  if (allProjects.length === 0) { body.innerHTML = '<div style="padding:40px;color:#888;font-size:14px">Noch keine Projekte erfasst.</div>'; return; }
-
-  const groups = {};
-  allProjects.forEach(p => {
-    const year = p.datum ? p.datum.substring(0,4) : 'Ohne Datum';
-    if (!groups[year]) groups[year] = [];
-    groups[year].push(p);
-  });
-
-  body.innerHTML = Object.keys(groups).sort((a,b) => b-a).map(year => `
-    <div style="margin-bottom:36px">
-      <div style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--border)">${year}</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        ${groups[year].map(p => {
-          const dot = dotColors[p.status] || '#888';
-          const dateStr = p.datum ? new Date(p.datum+'-01').toLocaleDateString('de-CH',{month:'long',year:'numeric'}) : '';
-          return `
-            <div onclick='openModal(${JSON.stringify(p).replace(/'/g,"&#39;")})' style="background:white;border:1px solid var(--border);border-radius:6px;padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:box-shadow 0.2s" onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow='none'">
-              <span style="width:10px;height:10px;border-radius:50%;background:${dot};flex-shrink:0"></span>
-              <div style="flex:1;min-width:0">
-                <div style="font-weight:600;font-size:14px">${p.titel}</div>
-                <div style="font-size:12px;color:var(--muted);margin-top:2px">${p.verantwortlich || ''}</div>
-              </div>
-              <span class="status-pill ${p.status}" style="flex-shrink:0">${p.status}</span>
-              <span style="font-size:12px;color:var(--muted);flex-shrink:0">${dateStr}</span>
-            </div>`;
-        }).join('')}
-      </div>
-    </div>`).join('');
+window.cancelForm = function() {
+  document.getElementById('form-section').style.display = 'none';
+  editingId = null;
 }
 
-// Filter
-document.querySelectorAll('.filter-tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    activeFilter = btn.dataset.filter;
-    render();
-  });
-});
-
-// View toggle
-window.setView = function(view) {
-  document.querySelectorAll('.subnav-item').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('view-projekte').style.display = view === 'projekte' ? '' : 'none';
-  document.getElementById('view-timeline').style.display = view === 'timeline' ? '' : 'none';
+function clearForm() {
+  ['f-titel','f-verantwortlich','f-budget','f-partner','f-region','f-beschrieb','f-bild-0','f-bild-1','f-bild-2']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-art').value = '';
+  document.getElementById('f-status').value = 'laufend';
+  document.getElementById('f-datum').value = '';
+  [0,1,2].forEach(i => { const p = document.getElementById('prev-'+i); p.style.display='none'; p.src=''; });
 }
 
-// Modal
-window.openModal = function(p) {
-  const wrap = document.getElementById('modal-img-wrap');
-  wrap.querySelectorAll('.modal-img-main,.modal-no-img-el').forEach(el => el.remove());
-
-  const imgs = p.bilder || [];
-  if (imgs.length > 0) {
-    imgs.forEach((src, i) => {
-      const img = document.createElement('img');
-      img.className = 'modal-img-main' + (i===0?' active':'');
-      img.src = src; img.alt = p.titel;
-      wrap.insertBefore(img, wrap.firstChild);
-    });
-    document.getElementById('modal-dots').innerHTML = imgs.length > 1
-      ? imgs.map((_,i) => `<button class="modal-dot ${i===0?'active':''}" onclick="showImg(${i})"></button>`).join('') : '';
-  } else {
-    const ph = document.createElement('div');
-    ph.className = 'modal-no-img modal-no-img-el';
-    ph.textContent = 'Clubentwicklung';
-    wrap.insertBefore(ph, wrap.firstChild);
-    document.getElementById('modal-dots').innerHTML = '';
-  }
-
-  document.getElementById('modal-status').textContent = p.status;
-  document.getElementById('modal-status').className = `status-pill ${p.status}`;
-  document.getElementById('modal-date').textContent = p.datum ? new Date(p.datum+'-01').toLocaleDateString('de-CH',{month:'long',year:'numeric'}) : '';
-  document.getElementById('modal-title').textContent = p.titel;
-  document.getElementById('modal-desc').textContent = p.beschrieb || '';
-  document.getElementById('modal-details').innerHTML = [
-    p.verantwortlich && `<div class="detail-item"><label>Verantwortlich</label><span>${p.verantwortlich}</span></div>`,
-    p.budget && `<div class="detail-item"><label>Budget</label><span>${p.budget}</span></div>`,
-    p.partner && `<div class="detail-item"><label>Partner</label><span>${p.partner}</span></div>`,
-    p.region && `<div class="detail-item"><label>Region</label><span>${p.region}</span></div>`,
-  ].filter(Boolean).join('');
-
-  document.getElementById('modal-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+window.editProject = function(id) {
+  const p = projects.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  document.getElementById('f-titel').value = p.titel||'';
+  document.getElementById('f-art').value = p.art||'';
+  document.getElementById('f-status').value = p.status||'laufend';
+  document.getElementById('f-datum').value = p.datum||'';
+  document.getElementById('f-verantwortlich').value = p.verantwortlich||'';
+  document.getElementById('f-budget').value = p.budget||'';
+  document.getElementById('f-partner').value = p.partner||'';
+  document.getElementById('f-region').value = p.region||'';
+  document.getElementById('f-beschrieb').value = p.beschrieb||'';
+  (p.bilder||[]).forEach((url,i) => { document.getElementById('f-bild-'+i).value = url; previewImg(i); });
+  document.getElementById('form-title').textContent = 'Projekt bearbeiten';
+  document.getElementById('form-section').style.display = 'block';
+  document.getElementById('form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-window.showImg = function(i) {
-  document.querySelectorAll('.modal-img-main').forEach((img,idx) => img.classList.toggle('active', idx===i));
-  document.querySelectorAll('.modal-dot').forEach((d,idx) => d.classList.toggle('active', idx===i));
+window.previewImg = function(i) {
+  const url = document.getElementById('f-bild-'+i).value.trim();
+  const p = document.getElementById('prev-'+i);
+  if (url) { p.src=url; p.style.display='block'; p.onerror=()=>{p.style.display='none';}; }
+  else { p.style.display='none'; p.src=''; }
 }
 
-window.closeModal = function(e) {
-  if (e.target !== document.getElementById('modal-overlay')) return;
-  closeModalDirect();
+window.saveProject = async function() {
+  const titel = document.getElementById('f-titel').value.trim();
+  const art = document.getElementById('f-art').value;
+  if (!titel) { showToast('Bitte Titel eingeben.', 'error'); return; }
+  if (!art) { showToast('Bitte Projektart wählen.', 'error'); return; }
+  const bilder = [0,1,2].map(i => document.getElementById('f-bild-'+i).value.trim()).filter(Boolean);
+  const btn = document.getElementById('save-btn');
+  btn.innerHTML = '<span class="spinner"></span> Speichern…'; btn.disabled = true;
+  try {
+    const data = {
+      titel, art, bilder,
+      status: document.getElementById('f-status').value,
+      datum: document.getElementById('f-datum').value,
+      verantwortlich: document.getElementById('f-verantwortlich').value.trim(),
+      budget: document.getElementById('f-budget').value.trim(),
+      partner: document.getElementById('f-partner').value.trim(),
+      region: document.getElementById('f-region').value.trim(),
+      beschrieb: document.getElementById('f-beschrieb').value.trim(),
+      updatedAt: new Date().toISOString()
+    };
+    if (editingId) {
+      await updateDoc(doc(db,"projekte",editingId), data);
+      showToast('Aktualisiert ✓', 'success');
+    } else {
+      data.createdAt = new Date().toISOString();
+      await addDoc(collection(db,"projekte"), data);
+      showToast('Gespeichert ✓', 'success');
+    }
+    await loadProjects(); cancelForm();
+  } catch(e) { showToast('Fehler: '+e.message, 'error'); }
+  finally { btn.innerHTML='Projekt speichern'; btn.disabled=false; }
 }
-window.closeModalDirect = function() {
-  document.getElementById('modal-overlay').classList.remove('open');
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeModalDirect(); });
 
-load();
+window.deleteProject = async function(id, titel) {
+  if (!confirm(`«${titel}» wirklich löschen?`)) return;
+  try { await deleteDoc(doc(db,"projekte",id)); showToast('Gelöscht.','success'); await loadProjects(); }
+  catch(e) { showToast('Fehler: '+e.message,'error'); }
+}
+
+window.showToast = function(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent=msg; t.className='toast show '+type;
+  setTimeout(()=>t.className='toast', 3500);
+}
 </script>
 </body>
 </html>
