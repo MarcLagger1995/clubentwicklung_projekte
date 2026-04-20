@@ -136,7 +136,18 @@
   .modal-art-tag.Kommunikation { background: var(--c-komm); color: white; }
   .modal-art-tag.Events { background: var(--c-events); color: white; }
   .modal-title { font-size: 22px; font-weight: 700; line-height: 1.2; margin-bottom: 14px; }
-  .modal-desc { font-size: 14px; color: #444; line-height: 1.75; white-space: pre-wrap; }
+  .modal-desc { font-size: 14px; color: #444; line-height: 1.75; }
+  .modal-desc b, .modal-desc strong { font-weight: 700; color: var(--text); }
+  .modal-desc i, .modal-desc em { font-style: italic; }
+  .modal-desc ul, .modal-desc ol { padding-left: 20px; margin: 6px 0; }
+  .modal-desc li { margin: 3px 0; }
+
+  /* Modal image gallery */
+  .modal-img-gallery { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); }
+  .modal-img-gallery-label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .modal-img-gallery-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .modal-img-thumb { width: 80px; height: 80px; border-radius: 5px; object-fit: cover; border: 1px solid var(--border); cursor: pointer; transition: opacity 0.15s, transform 0.15s; }
+  .modal-img-thumb:hover { opacity: 0.85; transform: scale(1.04); }
   .modal-details { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .detail-item label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
   .detail-item span { font-size: 13px; font-weight: 500; display: block; margin-top: 3px; }
@@ -447,13 +458,33 @@ window.openModal = function(p) {
     <span style="font-size:11px;color:var(--muted)">${dateStr}</span>
   `;
   document.getElementById('modal-title').textContent = p.titel;
-  document.getElementById('modal-desc').textContent = p.beschrieb || '';
+  document.getElementById('modal-desc').innerHTML = p.beschrieb || '';
+
+  // Image gallery (compact thumbnails, skip first image already shown in header)
+  const galleryImgs = (p.bilder || []).slice(1);
+  const existingGallery = document.getElementById('modal-img-gallery');
+  if (existingGallery) existingGallery.remove();
+
   document.getElementById('modal-details').innerHTML = [
     p.verantwortlich && `<div class="detail-item"><label>Verantwortlich</label><span>${p.verantwortlich}</span></div>`,
     p.budget && `<div class="detail-item"><label>Budget</label><span>${p.budget}</span></div>`,
     p.partner && `<div class="detail-item"><label>Partner</label><span>${p.partner}</span></div>`,
     p.region && `<div class="detail-item"><label>Region</label><span>${p.region}</span></div>`,
   ].filter(Boolean).join('');
+
+  // Compact image gallery below details (all images as thumbnails)
+  const allImgs = p.bilder || [];
+  if (allImgs.length > 1) {
+    const gallery = document.createElement('div');
+    gallery.id = 'modal-img-gallery';
+    gallery.className = 'modal-img-gallery';
+    gallery.innerHTML = `
+      <div class="modal-img-gallery-label">Bilder (${allImgs.length})</div>
+      <div class="modal-img-gallery-grid">
+        ${allImgs.map((src, i) => `<img class="modal-img-thumb" src="${src}" alt="" onclick="showImg(${i})" onerror="this.style.display='none'">`).join('')}
+      </div>`;
+    document.querySelector('.modal-body').appendChild(gallery);
+  }
 
   document.getElementById('modal-overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
