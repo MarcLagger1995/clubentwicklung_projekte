@@ -89,18 +89,49 @@
   .form-group { display: flex; flex-direction: column; gap: 5px; }
   .form-group.full { grid-column: 1 / -1; }
   .form-group label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
-  .form-group input, .form-group select, .form-group textarea { padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; color: var(--text); background: white; }
-  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--red); }
-  .form-group textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+  .form-group input, .form-group select { padding: 10px 13px; border: 1.5px solid var(--border); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; color: var(--text); background: white; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--red); }
 
-  /* Projektart selector with colored preview */
-  .art-select-wrap { position: relative; }
-  .art-preview { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+  /* ── RICH TEXT EDITOR ── */
+  .editor-wrap { border: 1.5px solid var(--border); border-radius: 6px; overflow: hidden; transition: border-color 0.2s; }
+  .editor-wrap:focus-within { border-color: var(--red); }
+  .editor-toolbar { display: flex; gap: 2px; padding: 6px 8px; background: var(--light); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .toolbar-btn { width: 28px; height: 28px; border: 1px solid transparent; border-radius: 4px; background: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .toolbar-btn:hover { background: white; border-color: var(--border); }
+  .toolbar-btn.active { background: white; border-color: var(--border); color: var(--red); }
+  .toolbar-sep { width: 1px; background: var(--border); margin: 4px 3px; }
+  #f-beschrieb-editor {
+    min-height: 140px;
+    padding: 12px 13px;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text);
+    background: white;
+  }
+  #f-beschrieb-editor ul, #f-beschrieb-editor ol { padding-left: 20px; margin: 4px 0; }
+  #f-beschrieb-editor li { margin: 2px 0; }
+  #f-beschrieb-editor b, #f-beschrieb-editor strong { font-weight: 700; }
+  #f-beschrieb-editor[data-placeholder]:empty:before {
+    content: attr(data-placeholder);
+    color: #aaa;
+    pointer-events: none;
+  }
 
-  .img-url-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .img-url-row input { flex: 1; }
-  .img-preview-thumb { width: 44px; height: 44px; border-radius: 5px; object-fit: cover; border: 1px solid var(--border); display: none; flex-shrink: 0; }
-  .img-hint { font-size: 12px; color: var(--muted); margin-top: 6px; background: var(--light); border-radius: 6px; padding: 10px 13px; line-height: 1.6; }
+  /* ── IMAGE GALLERY SECTION ── */
+  .img-gallery-section { margin-top: 4px; }
+  .img-gallery-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; min-height: 0; }
+  .img-gallery-item { position: relative; width: 90px; height: 90px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); flex-shrink: 0; }
+  .img-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .img-gallery-remove { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; background: rgba(0,0,0,0.6); border: none; border-radius: 50%; color: white; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
+  .img-gallery-remove:hover { background: rgba(180,0,0,0.85); }
+  .img-add-row { display: flex; gap: 8px; align-items: center; }
+  .img-add-row input { flex: 1; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; }
+  .img-add-row input:focus { border-color: var(--red); }
+  .img-add-btn { padding: 9px 14px; border: 1.5px solid var(--border); border-radius: 6px; background: white; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.15s; color: var(--text); }
+  .img-add-btn:hover { border-color: var(--red); color: var(--red); }
+  .img-hint { font-size: 12px; color: var(--muted); margin-top: 8px; background: var(--light); border-radius: 6px; padding: 10px 13px; line-height: 1.6; }
   .img-hint a { color: var(--red); text-decoration: none; font-weight: 600; }
 
   .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--border); }
@@ -220,27 +251,38 @@
           <input type="text" id="f-region" placeholder="z.B. Skiclub Naters">
         </div>
 
+        <!-- RICH TEXT BESCHRIEB -->
         <div class="form-group full">
           <label>Kurzbeschrieb</label>
-          <textarea id="f-beschrieb" placeholder="Beschreibe das Projekt, seine Ziele und Resultate…"></textarea>
+          <div class="editor-wrap">
+            <div class="editor-toolbar">
+              <button class="toolbar-btn" title="Fett" onmousedown="event.preventDefault(); fmt('bold')"><b>B</b></button>
+              <button class="toolbar-btn" title="Kursiv" onmousedown="event.preventDefault(); fmt('italic')"><i>I</i></button>
+              <div class="toolbar-sep"></div>
+              <button class="toolbar-btn" title="Aufzählungsliste" onmousedown="event.preventDefault(); fmt('insertUnorderedList')">☰</button>
+              <button class="toolbar-btn" title="Nummerierte Liste" onmousedown="event.preventDefault(); fmt('insertOrderedList')">1.</button>
+              <div class="toolbar-sep"></div>
+              <button class="toolbar-btn" title="Formatierung entfernen" onmousedown="event.preventDefault(); fmt('removeFormat')" style="font-size:11px">✕</button>
+            </div>
+            <div id="f-beschrieb-editor"
+              contenteditable="true"
+              data-placeholder="Ausgangslage, Ziel, Vorgehen, Ergebnis/Status, Beteiligte…">
+            </div>
+          </div>
         </div>
 
+        <!-- IMAGE GALLERY -->
         <div class="form-group full">
-          <label>Bilder (bis zu 3 Bild-Links)</label>
-          <div class="img-url-row">
-            <img class="img-preview-thumb" id="prev-0" alt="">
-            <input type="url" id="f-bild-0" placeholder="Bild 1 – Link (z.B. https://i.imgur.com/abc.jpg)" oninput="previewImg(0)">
-          </div>
-          <div class="img-url-row">
-            <img class="img-preview-thumb" id="prev-1" alt="">
-            <input type="url" id="f-bild-1" placeholder="Bild 2 – Link (optional)" oninput="previewImg(1)">
-          </div>
-          <div class="img-url-row">
-            <img class="img-preview-thumb" id="prev-2" alt="">
-            <input type="url" id="f-bild-2" placeholder="Bild 3 – Link (optional)" oninput="previewImg(2)">
-          </div>
-          <div class="img-hint">
-            💡 Bild hochladen auf <a href="https://imgur.com" target="_blank">imgur.com</a> → Rechtsklick auf Bild → «Bildadresse kopieren» → Link hier einfügen.
+          <label>Projektbilder</label>
+          <div class="img-gallery-section">
+            <div class="img-gallery-grid" id="img-gallery-grid"></div>
+            <div class="img-add-row">
+              <input type="url" id="img-url-input" placeholder="Bild-Link einfügen (z.B. https://i.imgur.com/abc.jpg)" onkeydown="if(event.key==='Enter'){event.preventDefault();addImage();}">
+              <button class="img-add-btn" onclick="addImage()">+ Bild hinzufügen</button>
+            </div>
+            <div class="img-hint">
+              💡 Bild hochladen auf <a href="https://imgur.com" target="_blank">imgur.com</a> → Rechtsklick auf Bild → «Bildadresse kopieren» → Link oben einfügen.
+            </div>
           </div>
         </div>
 
@@ -273,6 +315,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 let projects = [];
 let editingId = null;
+let currentImages = []; // array of URL strings
 
 window.doLogin = function() {
   if (document.getElementById('pw-input').value === 'Clubetnwicklung') {
@@ -338,12 +381,14 @@ window.cancelForm = function() {
 }
 
 function clearForm() {
-  ['f-titel','f-verantwortlich','f-budget','f-partner','f-region','f-beschrieb','f-bild-0','f-bild-1','f-bild-2']
+  ['f-titel','f-verantwortlich','f-budget','f-partner','f-region']
     .forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-art').value = '';
   document.getElementById('f-status').value = 'laufend';
   document.getElementById('f-datum').value = '';
-  [0,1,2].forEach(i => { const p = document.getElementById('prev-'+i); p.style.display='none'; p.src=''; });
+  document.getElementById('f-beschrieb-editor').innerHTML = '';
+  currentImages = [];
+  renderGallery();
 }
 
 window.editProject = function(id) {
@@ -358,18 +403,46 @@ window.editProject = function(id) {
   document.getElementById('f-budget').value = p.budget||'';
   document.getElementById('f-partner').value = p.partner||'';
   document.getElementById('f-region').value = p.region||'';
-  document.getElementById('f-beschrieb').value = p.beschrieb||'';
-  (p.bilder||[]).forEach((url,i) => { document.getElementById('f-bild-'+i).value = url; previewImg(i); });
+  // Rich text
+  document.getElementById('f-beschrieb-editor').innerHTML = p.beschrieb||'';
+  // Images
+  currentImages = [...(p.bilder||[])];
+  renderGallery();
   document.getElementById('form-title').textContent = 'Projekt bearbeiten';
   document.getElementById('form-section').style.display = 'block';
   document.getElementById('form-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-window.previewImg = function(i) {
-  const url = document.getElementById('f-bild-'+i).value.trim();
-  const p = document.getElementById('prev-'+i);
-  if (url) { p.src=url; p.style.display='block'; p.onerror=()=>{p.style.display='none';}; }
-  else { p.style.display='none'; p.src=''; }
+// ── Rich text formatting ──
+window.fmt = function(cmd) {
+  document.getElementById('f-beschrieb-editor').focus();
+  document.execCommand(cmd, false, null);
+}
+
+// ── Image gallery ──
+window.addImage = function() {
+  const input = document.getElementById('img-url-input');
+  const url = input.value.trim();
+  if (!url) return;
+  if (currentImages.length >= 6) { showToast('Maximal 6 Bilder pro Projekt.', 'error'); return; }
+  currentImages.push(url);
+  renderGallery();
+  input.value = '';
+}
+
+function renderGallery() {
+  const grid = document.getElementById('img-gallery-grid');
+  if (currentImages.length === 0) { grid.innerHTML = ''; return; }
+  grid.innerHTML = currentImages.map((url, i) => `
+    <div class="img-gallery-item">
+      <img src="${url}" alt="" onerror="this.style.opacity='0.3'">
+      <button class="img-gallery-remove" onclick="removeImage(${i})" title="Bild entfernen">✕</button>
+    </div>`).join('');
+}
+
+window.removeImage = function(i) {
+  currentImages.splice(i, 1);
+  renderGallery();
 }
 
 window.saveProject = async function() {
@@ -377,19 +450,20 @@ window.saveProject = async function() {
   const art = document.getElementById('f-art').value;
   if (!titel) { showToast('Bitte Titel eingeben.', 'error'); return; }
   if (!art) { showToast('Bitte Projektart wählen.', 'error'); return; }
-  const bilder = [0,1,2].map(i => document.getElementById('f-bild-'+i).value.trim()).filter(Boolean);
+  const beschrieb = document.getElementById('f-beschrieb-editor').innerHTML.trim();
   const btn = document.getElementById('save-btn');
   btn.innerHTML = '<span class="spinner"></span> Speichern…'; btn.disabled = true;
   try {
     const data = {
-      titel, art, bilder,
+      titel, art,
+      bilder: currentImages,
       status: document.getElementById('f-status').value,
       datum: document.getElementById('f-datum').value,
       verantwortlich: document.getElementById('f-verantwortlich').value.trim(),
       budget: document.getElementById('f-budget').value.trim(),
       partner: document.getElementById('f-partner').value.trim(),
       region: document.getElementById('f-region').value.trim(),
-      beschrieb: document.getElementById('f-beschrieb').value.trim(),
+      beschrieb,
       updatedAt: new Date().toISOString()
     };
     if (editingId) {
