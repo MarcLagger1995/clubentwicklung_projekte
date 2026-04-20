@@ -148,6 +148,11 @@
   .modal-img-gallery-grid { display: flex; flex-wrap: wrap; gap: 8px; }
   .modal-img-thumb { width: 80px; height: 80px; border-radius: 5px; object-fit: cover; border: 1px solid var(--border); cursor: pointer; transition: opacity 0.15s, transform 0.15s; }
   .modal-img-thumb:hover { opacity: 0.85; transform: scale(1.04); }
+
+  /* Segmentierung tag */
+  .seg-tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 100px; background: #f0f0f5; color: var(--muted); border: 1px solid var(--border); }
+  .modal-desc a { color: var(--red); text-decoration: underline; }
+  .modal-desc a:hover { opacity: 0.8; }
   .modal-details { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .detail-item label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
   .detail-item span { font-size: 13px; font-weight: 500; display: block; margin-top: 3px; }
@@ -379,6 +384,7 @@ function renderCards(list) {
           <div class="card-top-meta">
             <span class="status-tag ${p.status}">${p.status || ''}</span>
             <span class="card-date">${dateStr}</span>
+            ${p.segmentierung ? `<span class="seg-tag">${p.segmentierung}</span>` : ''}
           </div>
           <div class="card-title">${p.titel}</div>
           <div class="card-desc">${p.beschrieb || ''}</div>
@@ -470,6 +476,7 @@ window.openModal = function(p) {
     p.budget && `<div class="detail-item"><label>Budget</label><span>${p.budget}</span></div>`,
     p.partner && `<div class="detail-item"><label>Partner</label><span>${p.partner}</span></div>`,
     p.region && `<div class="detail-item"><label>Region</label><span>${p.region}</span></div>`,
+    p.segmentierung && `<div class="detail-item"><label>Segmentierung</label><span><span class="seg-tag">${p.segmentierung}</span></span></div>`,
   ].filter(Boolean).join('');
 
   // Compact image gallery below details (all images as thumbnails)
