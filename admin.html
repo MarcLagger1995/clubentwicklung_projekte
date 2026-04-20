@@ -100,6 +100,18 @@
   .toolbar-btn:hover { background: white; border-color: var(--border); }
   .toolbar-btn.active { background: white; border-color: var(--border); color: var(--red); }
   .toolbar-sep { width: 1px; background: var(--border); margin: 4px 3px; }
+  .toolbar-btn-wide { height: 28px; padding: 0 10px; border: 1px solid transparent; border-radius: 4px; background: none; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 4px; transition: all 0.15s; white-space: nowrap; }
+  .toolbar-btn-wide:hover { background: white; border-color: var(--border); }
+
+  /* Link modal */
+  .link-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 500; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .link-modal-overlay.open { opacity: 1; pointer-events: all; }
+  .link-modal { background: white; border-radius: 8px; padding: 24px; width: 100%; max-width: 400px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+  .link-modal h3 { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+  .link-modal label { font-size: 10px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; display: block; margin-bottom: 4px; }
+  .link-modal input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; margin-bottom: 12px; transition: border-color 0.2s; }
+  .link-modal input:focus { border-color: var(--red); }
+  .link-modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
   #f-beschrieb-editor {
     min-height: 140px;
     padding: 12px 13px;
@@ -227,6 +239,19 @@
         </div>
 
         <div class="form-group">
+          <label>Segmentierung</label>
+          <select id="f-segmentierung">
+            <option value="">– keine Zuordnung –</option>
+            <option value="Race Club JO">Race Club JO</option>
+            <option value="Race Club Familie">Race Club Familie</option>
+            <option value="Allrounder Club">Allrounder Club</option>
+            <option value="Breitensport Club">Breitensport Club</option>
+            <option value="Erwachsenen Club">Erwachsenen Club</option>
+            <option value="Nicht zuordenbarer Club">Nicht zuordenbarer Club</option>
+          </select>
+        </div>
+
+        <div class="form-group">
           <label>Datum (Monat/Jahr)</label>
           <input type="month" id="f-datum">
         </div>
@@ -262,6 +287,8 @@
               <button class="toolbar-btn" title="Aufzählungsliste" onmousedown="event.preventDefault(); fmt('insertUnorderedList')">☰</button>
               <button class="toolbar-btn" title="Nummerierte Liste" onmousedown="event.preventDefault(); fmt('insertOrderedList')">1.</button>
               <div class="toolbar-sep"></div>
+              <button class="toolbar-btn-wide" title="Link einfügen" onmousedown="event.preventDefault(); openLinkModal()">🔗 Link</button>
+              <div class="toolbar-sep"></div>
               <button class="toolbar-btn" title="Formatierung entfernen" onmousedown="event.preventDefault(); fmt('removeFormat')" style="font-size:11px">✕</button>
             </div>
             <div id="f-beschrieb-editor"
@@ -296,6 +323,21 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Link Modal -->
+<div class="link-modal-overlay" id="link-modal-overlay">
+  <div class="link-modal">
+    <h3>🔗 Link einfügen</h3>
+    <label>Linktext</label>
+    <input type="text" id="link-text" placeholder="z.B. Zur Clubzone">
+    <label>URL</label>
+    <input type="url" id="link-url" placeholder="https://..." onkeydown="if(event.key==='Enter') insertLink()">
+    <div class="link-modal-actions">
+      <button class="btn btn-secondary" onclick="closeLinkModal()">Abbrechen</button>
+      <button class="btn btn-primary" onclick="insertLink()">Einfügen</button>
+    </div>
+  </div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -385,6 +427,7 @@ function clearForm() {
     .forEach(id => document.getElementById(id).value = '');
   document.getElementById('f-art').value = '';
   document.getElementById('f-status').value = 'laufend';
+  document.getElementById('f-segmentierung').value = '';
   document.getElementById('f-datum').value = '';
   document.getElementById('f-beschrieb-editor').innerHTML = '';
   currentImages = [];
@@ -403,6 +446,7 @@ window.editProject = function(id) {
   document.getElementById('f-budget').value = p.budget||'';
   document.getElementById('f-partner').value = p.partner||'';
   document.getElementById('f-region').value = p.region||'';
+  document.getElementById('f-segmentierung').value = p.segmentierung||'';
   // Rich text
   document.getElementById('f-beschrieb-editor').innerHTML = p.beschrieb||'';
   // Images
@@ -418,6 +462,47 @@ window.fmt = function(cmd) {
   document.getElementById('f-beschrieb-editor').focus();
   document.execCommand(cmd, false, null);
 }
+
+// ── Link modal ──
+let savedSelection = null;
+window.openLinkModal = function() {
+  // Save current selection so we can restore it when inserting
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    savedSelection = sel.getRangeAt(0).cloneRange();
+    const selectedText = sel.toString();
+    document.getElementById('link-text').value = selectedText || '';
+  }
+  document.getElementById('link-url').value = '';
+  document.getElementById('link-modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById(document.getElementById('link-text').value ? 'link-url' : 'link-text').focus(), 100);
+}
+
+window.closeLinkModal = function() {
+  document.getElementById('link-modal-overlay').classList.remove('open');
+  savedSelection = null;
+}
+
+window.insertLink = function() {
+  const text = document.getElementById('link-text').value.trim();
+  const url = document.getElementById('link-url').value.trim();
+  if (!url) { document.getElementById('link-url').focus(); return; }
+  const editor = document.getElementById('f-beschrieb-editor');
+  editor.focus();
+  if (savedSelection) {
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedSelection);
+  }
+  const linkText = text || url;
+  document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" rel="noopener">${linkText}</a>`);
+  closeLinkModal();
+}
+
+// Close link modal on overlay click
+document.getElementById('link-modal-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeLinkModal();
+});
 
 // ── Image gallery ──
 window.addImage = function() {
@@ -463,6 +548,7 @@ window.saveProject = async function() {
       budget: document.getElementById('f-budget').value.trim(),
       partner: document.getElementById('f-partner').value.trim(),
       region: document.getElementById('f-region').value.trim(),
+      segmentierung: document.getElementById('f-segmentierung').value,
       beschrieb,
       updatedAt: new Date().toISOString()
     };
